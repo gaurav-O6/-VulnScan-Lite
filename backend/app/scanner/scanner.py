@@ -1,31 +1,34 @@
 from app.scanner.http_client import HTTPClient
 from app.scanner.validator import URLValidator
 from app.scanner.checks.headers import HeaderChecker
+from app.scanner.checks.ssl_check import SSLChecker
 
 
 class Scanner:
     """
     Coordinates the scanning workflow.
 
-    The Scanner orchestrates the different scanning components
-    but does not perform the individual security checks itself.
+    The Scanner orchestrates different security checks
+    but does not perform the checks itself.
     """
 
     def __init__(self):
         self.validator = URLValidator()
         self.http_client = HTTPClient()
+
         self.header_checker = HeaderChecker()
+        self.ssl_checker = SSLChecker()
 
     def scan(self, url: str) -> dict:
         """
         Execute a vulnerability scan.
 
         Workflow:
-        1. Validate the URL.
-        2. Fetch the target.
-        3. Build a scan context.
+        1. Validate URL.
+        2. Fetch target.
+        3. Create scan context.
         4. Run security checks.
-        5. Return the collected results.
+        5. Return results.
         """
 
         validation = self.validator.validate(url)
@@ -36,6 +39,7 @@ class Scanner:
                 "target": None,
                 "status_code": None,
                 "headers": None,
+                "ssl": None,
                 "error": validation["error"],
             }
 
@@ -49,6 +53,7 @@ class Scanner:
                 "target": target,
                 "status_code": None,
                 "headers": None,
+                "ssl": None,
                 "error": result["error"],
             }
 
@@ -61,11 +66,14 @@ class Scanner:
 
         header_results = self.header_checker.analyze(context)
 
+        ssl_results = self.ssl_checker.analyze(context)
+
         return {
             "success": True,
             "target": response.url,
             "status_code": response.status_code,
             "headers": header_results,
+            "ssl": ssl_results,
             "error": None,
         }
 
