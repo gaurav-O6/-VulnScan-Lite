@@ -2,6 +2,7 @@ from app.scanner.http_client import HTTPClient
 from app.scanner.validator import URLValidator
 from app.scanner.checks.headers import HeaderChecker
 from app.scanner.checks.ssl_check import SSLChecker
+from app.scanner.checks.cms import CMSDetector
 
 
 class Scanner:
@@ -18,6 +19,7 @@ class Scanner:
 
         self.header_checker = HeaderChecker()
         self.ssl_checker = SSLChecker()
+        self.cms_detector = CMSDetector()
 
     def scan(self, url: str) -> dict:
         """
@@ -28,7 +30,7 @@ class Scanner:
         2. Fetch target.
         3. Create scan context.
         4. Run security checks.
-        5. Return results.
+        5. Return combined results.
         """
 
         validation = self.validator.validate(url)
@@ -40,6 +42,7 @@ class Scanner:
                 "status_code": None,
                 "headers": None,
                 "ssl": None,
+                "technology": None,
                 "error": validation["error"],
             }
 
@@ -54,6 +57,7 @@ class Scanner:
                 "status_code": None,
                 "headers": None,
                 "ssl": None,
+                "technology": None,
                 "error": result["error"],
             }
 
@@ -68,12 +72,15 @@ class Scanner:
 
         ssl_results = self.ssl_checker.analyze(context)
 
+        technology_results = self.cms_detector.analyze(context)
+
         return {
             "success": True,
             "target": response.url,
             "status_code": response.status_code,
             "headers": header_results,
             "ssl": ssl_results,
+            "technology": technology_results,
             "error": None,
         }
 
