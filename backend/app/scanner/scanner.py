@@ -2,6 +2,7 @@ from app.scanner.http_client import HTTPClient
 from app.scanner.validator import URLValidator
 
 from app.scanner.checks.headers import HeaderChecker
+from app.scanner.checks.http_headers import HTTPHeaderAnalyzer
 from app.scanner.checks.ssl_check import SSLChecker
 from app.scanner.checks.cms import CMSDetector
 from app.scanner.checks.cookies import CookieChecker
@@ -9,18 +10,21 @@ from app.scanner.checks.exposure import ExposureChecker
 from app.scanner.checks.methods import HTTPMethodChecker
 from app.scanner.checks.response_info import ResponseInfoChecker
 
+from app.scanner.checks.files import SensitiveFileChecker
+from app.scanner.checks.robots import RobotsChecker
+from app.scanner.checks.security_txt import SecurityTxtChecker
+
+
 from app.scanner.scoring import ScoringEngine
 from app.scanner.report_builder import ReportBuilder
 
 
+
 class Scanner:
     """
-    Coordinates the vulnerability scanning workflow.
-
-    Scanner acts as the orchestrator.
-    Individual security checks are handled
-    by separate modules.
+    Coordinates complete vulnerability scanning workflow.
     """
+
 
     def __init__(self):
 
@@ -28,7 +32,10 @@ class Scanner:
 
         self.http_client = HTTPClient()
 
+
         self.header_checker = HeaderChecker()
+
+        self.http_header_analyzer = HTTPHeaderAnalyzer()
 
         self.ssl_checker = SSLChecker()
 
@@ -42,25 +49,31 @@ class Scanner:
 
         self.response_info_checker = ResponseInfoChecker()
 
+
+        # New checks
+
+        self.file_checker = SensitiveFileChecker()
+
+        self.robots_checker = RobotsChecker()
+
+        self.security_txt_checker = SecurityTxtChecker()
+
+
+
         self.scoring_engine = ScoringEngine()
 
         self.report_builder = ReportBuilder()
 
+
+
     def scan(self, url: str) -> dict:
         """
         Execute complete vulnerability scan.
-
-        Workflow:
-
-        1. Validate URL
-        2. Fetch target
-        3. Create scan context
-        4. Run security checks
-        5. Calculate score
-        6. Build final report
         """
 
+
         validation = self.validator.validate(url)
+
 
         if not validation["valid"]:
 
@@ -72,9 +85,15 @@ class Scanner:
                 "error": validation["error"],
             }
 
+
+
         target = validation["normalized_url"]
 
+
+
         response_result = self.http_client.get(target)
+
+
 
         if not response_result["success"]:
 
@@ -86,7 +105,11 @@ class Scanner:
                 "error": response_result["error"],
             }
 
+
+
         response = response_result["response"]
+
+
 
         context = {
             "url": target,
@@ -94,43 +117,69 @@ class Scanner:
             "elapsed_ms": response_result["elapsed_ms"],
         }
 
-        #
-        # Security checks
-        #
+
 
         response_info_results = self.response_info_checker.analyze(
             context
         )
 
+
+        http_header_results = self.http_header_analyzer.analyze(
+            context
+        )
+
+
         header_results = self.header_checker.analyze(
             context
         )
+
 
         ssl_results = self.ssl_checker.analyze(
             context
         )
 
+
         technology_results = self.cms_detector.analyze(
             context
         )
+
 
         cookie_results = self.cookie_checker.analyze(
             context
         )
 
+
         exposure_results = self.exposure_checker.analyze(
             context
         )
+
 
         http_method_results = self.http_method_checker.analyze(
             context
         )
 
-        #
-        # Combine findings
-        #
+
+        # New checks
+
+        file_results = self.file_checker.analyze(
+            context
+        )
+
+
+        robots_results = self.robots_checker.analyze(
+            context
+        )
+
+
+        security_txt_results = self.security_txt_checker.analyze(
+            context
+        )
+
+
 
         findings = []
+
+
 
         findings.extend(
             header_results.get(
@@ -139,12 +188,14 @@ class Scanner:
             )
         )
 
+
         findings.extend(
             cookie_results.get(
                 "findings",
                 []
             )
         )
+
 
         findings.extend(
             exposure_results.get(
@@ -153,6 +204,7 @@ class Scanner:
             )
         )
 
+
         findings.extend(
             http_method_results.get(
                 "findings",
@@ -160,47 +212,66 @@ class Scanner:
             )
         )
 
-        #
-        # Calculate security score
-        #
+
+        findings.extend(
+            file_results.get(
+                "findings",
+                []
+            )
+        )
+
+
+        findings.extend(
+            robots_results.get(
+                "findings",
+                []
+            )
+        )
+
+
+        findings.extend(
+            security_txt_results.get(
+                "findings",
+                []
+            )
+        )
+
+
 
         score_results = self.scoring_engine.calculate(
             findings
         )
 
-        #
-        # Generate final report
-        #
+
 
         report = self.report_builder.build(
             target=response.url,
             response_info=response_info_results,
+            http_headers=http_header_results,
             headers=header_results,
             ssl=ssl_results,
             technology=technology_results,
             cookies=cookie_results,
             exposure=exposure_results,
             http_methods=http_method_results,
+            files=file_results,
+            robots=robots_results,
+            security_txt=security_txt_results,
             score=score_results,
         )
 
+
+
         return {
-
             "success": True,
-
             "target": response.url,
-
             "status_code": response.status_code,
-
             "report": report,
-
             "error": None,
-
         }
 
+
+
     def close(self):
-        """
-        Release scanner resources.
-        """
 
         self.http_client.close()

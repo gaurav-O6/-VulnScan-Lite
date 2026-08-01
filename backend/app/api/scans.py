@@ -1,6 +1,12 @@
+from datetime import datetime
+
 from flask import Blueprint, jsonify, request
 
-from app.services import ScanService
+from app.extensions import db
+from app.models import Scan
+
+from app.queue import scan_queue
+from app.workers.scan_worker import process_scan
 
 
 scans_bp = Blueprint(
@@ -13,12 +19,14 @@ scans_bp = Blueprint(
 @scans_bp.route("", methods=["POST"])
 def create_scan():
     """
-    Create and execute a vulnerability scan.
+    Queue a vulnerability scan.
     """
 
     data = request.get_json(silent=True)
 
+
     if data is None:
+
         return (
             jsonify(
                 {
@@ -28,9 +36,12 @@ def create_scan():
             400,
         )
 
+
     url = data.get("url")
 
+
     if not url:
+
         return (
             jsonify(
                 {
@@ -40,9 +51,26 @@ def create_scan():
             400,
         )
 
-    service = ScanService()
 
-    scan = service.run_scan(url)
+    scan = Scan(
+        target_url=url,
+        status="queued",
+        started_at=None,
+        completed_at=None,
+    )
+
+
+    db.session.add(scan)
+
+    db.session.commit()
+
+
+
+    scan_queue.enqueue(
+        process_scan,
+        scan.id,
+    )
+
 
     return (
         jsonify(
@@ -55,17 +83,22 @@ def create_scan():
     )
 
 
+
 @scans_bp.route("/<int:scan_id>", methods=["GET"])
 def get_scan(scan_id: int):
     """
-    Retrieve a stored scan.
+    Retrieve scan result.
     """
 
-    service = ScanService()
 
-    scan = service.get_scan(scan_id)
+    scan = db.session.get(
+        Scan,
+        scan_id,
+    )
+
 
     if scan is None:
+
         return (
             jsonify(
                 {
@@ -75,6 +108,7 @@ def get_scan(scan_id: int):
             404,
         )
 
+
     return jsonify(
         {
             "id": scan.id,
@@ -83,16 +117,19 @@ def get_scan(scan_id: int):
             "score": scan.score,
             "grade": scan.grade,
             "report": scan.report_json,
+
             "created_at": (
                 scan.created_at.isoformat()
                 if scan.created_at
                 else None
             ),
+
             "started_at": (
                 scan.started_at.isoformat()
                 if scan.started_at
                 else None
             ),
+
             "completed_at": (
                 scan.completed_at.isoformat()
                 if scan.completed_at
@@ -102,17 +139,25 @@ def get_scan(scan_id: int):
     )
 
 
+
 @scans_bp.route("", methods=["GET"])
 def get_scan_history():
     """
     Retrieve scan history.
     """
 
-    service = ScanService()
 
-    scans = service.get_all_scans()
+    scans = (
+        Scan.query
+        .order_by(
+            Scan.created_at.desc()
+        )
+        .all()
+    )
+
 
     history = []
+
 
     for scan in scans:
 
@@ -123,11 +168,13 @@ def get_scan_history():
                 "status": scan.status,
                 "score": scan.score,
                 "grade": scan.grade,
+
                 "created_at": (
                     scan.created_at.isoformat()
                     if scan.created_at
                     else None
                 ),
+
                 "completed_at": (
                     scan.completed_at.isoformat()
                     if scan.completed_at
@@ -135,5 +182,6 @@ def get_scan_history():
                 ),
             }
         )
+
 
     return jsonify(history)
