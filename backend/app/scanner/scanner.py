@@ -3,11 +3,13 @@ from app.scanner.validator import URLValidator
 from app.scanner.checks.headers import HeaderChecker
 from app.scanner.checks.ssl_check import SSLChecker
 from app.scanner.checks.cms import CMSDetector
+from app.scanner.scoring import ScoringEngine
+from app.scanner.report_builder import ReportBuilder
 
 
 class Scanner:
     """
-    Coordinates the scanning workflow.
+    Coordinates the vulnerability scanning workflow.
 
     The Scanner orchestrates different security checks
     but does not perform the checks itself.
@@ -21,6 +23,9 @@ class Scanner:
         self.ssl_checker = SSLChecker()
         self.cms_detector = CMSDetector()
 
+        self.scoring_engine = ScoringEngine()
+        self.report_builder = ReportBuilder()
+
     def scan(self, url: str) -> dict:
         """
         Execute a vulnerability scan.
@@ -28,9 +33,9 @@ class Scanner:
         Workflow:
         1. Validate URL.
         2. Fetch target.
-        3. Create scan context.
-        4. Run security checks.
-        5. Return combined results.
+        3. Run security checks.
+        4. Calculate security score.
+        5. Build final report.
         """
 
         validation = self.validator.validate(url)
@@ -40,9 +45,7 @@ class Scanner:
                 "success": False,
                 "target": None,
                 "status_code": None,
-                "headers": None,
-                "ssl": None,
-                "technology": None,
+                "report": None,
                 "error": validation["error"],
             }
 
@@ -55,9 +58,7 @@ class Scanner:
                 "success": False,
                 "target": target,
                 "status_code": None,
-                "headers": None,
-                "ssl": None,
-                "technology": None,
+                "report": None,
                 "error": result["error"],
             }
 
@@ -69,18 +70,26 @@ class Scanner:
         }
 
         header_results = self.header_checker.analyze(context)
-
         ssl_results = self.ssl_checker.analyze(context)
-
         technology_results = self.cms_detector.analyze(context)
+
+        score_results = self.scoring_engine.calculate(
+            header_results["findings"]
+        )
+
+        report = self.report_builder.build(
+            target=response.url,
+            headers=header_results,
+            ssl=ssl_results,
+            technology=technology_results,
+            score=score_results,
+        )
 
         return {
             "success": True,
             "target": response.url,
             "status_code": response.status_code,
-            "headers": header_results,
-            "ssl": ssl_results,
-            "technology": technology_results,
+            "report": report,
             "error": None,
         }
 
