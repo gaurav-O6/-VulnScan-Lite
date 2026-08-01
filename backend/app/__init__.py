@@ -2,7 +2,11 @@ from flask import Flask
 
 from app.config import Config
 from app.extensions import db, migrate
-from app.api.health import health_bp
+
+from app.api import (
+    health_bp,
+    scans_bp,
+)
 
 # Import models so Flask-Migrate can discover them
 from app.models import Scan
@@ -11,6 +15,7 @@ from app.models import Scan
 def create_app():
     """
     Application Factory.
+
     Creates and configures the Flask application.
     """
 
@@ -25,5 +30,6 @@ def create_app():
 
     # Register API blueprints
     app.register_blueprint(health_bp)
+    app.register_blueprint(scans_bp)
 
     return app
