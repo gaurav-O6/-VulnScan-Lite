@@ -1,9 +1,13 @@
+import FindingCard from "./FindingCard";
+
+
 function FindingsList({ findings }) {
 
 
     return (
 
         <div className="report-card">
+
 
             <h2>
                 Security Findings
@@ -12,55 +16,22 @@ function FindingsList({ findings }) {
 
 
             {
+
                 findings.map(
                     (finding) => (
 
-                        <div
+                        <FindingCard
+
                             key={finding.id}
-                            style={{
-                                marginTop: "20px",
-                                padding: "15px",
-                                background: "#334155",
-                                borderRadius: "8px"
-                            }}
-                        >
 
-                            <h3>
-                                {finding.name}
-                            </h3>
+                            finding={finding}
 
-
-                            <p>
-                                Severity:
-                                {" "}
-                                {finding.severity}
-                            </p>
-
-
-                            <p>
-                                Status:
-                                {" "}
-                                {finding.status}
-                            </p>
-
-
-                            {
-                                finding.evidence &&
-
-                                <p>
-                                    Evidence:
-                                    {" "}
-                                    {finding.evidence}
-                                </p>
-
-                            }
-
-
-                        </div>
+                        />
 
                     )
 
                 )
+
             }
 
 

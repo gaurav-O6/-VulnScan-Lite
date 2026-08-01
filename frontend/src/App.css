@@ -151,3 +151,176 @@ main {
         #ef4444;
 
 }
+
+.finding-card {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    background: #0f172a;
+
+    border-radius: 10px;
+
+    border: 1px solid #334155;
+
+}
+
+
+
+.finding-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+
+.finding-header h3 {
+
+    margin: 0;
+
+    color: #f8fafc;
+
+}
+
+
+
+.finding-badges {
+
+    display: flex;
+
+    gap: 10px;
+
+}
+
+
+
+.severity-badge,
+.status-badge {
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+
+.severity-badge.high {
+
+    background: #7f1d1d;
+
+    color: #fecaca;
+
+}
+
+
+
+.severity-badge.medium {
+
+    background: #78350f;
+
+    color: #fde68a;
+
+}
+
+
+
+.severity-badge.low {
+
+    background: #713f12;
+
+    color: #fef08a;
+
+}
+
+
+
+.severity-badge.informational {
+
+    background: #1e3a8a;
+
+    color: #bfdbfe;
+
+}
+
+
+
+.status-badge.passed {
+
+    background: #14532d;
+
+    color: #bbf7d0;
+
+}
+
+
+
+.status-badge.failed {
+
+    background: #991b1b;
+
+    color: #fecaca;
+
+}
+
+
+
+.finding-description {
+
+    margin-top: 15px;
+
+    color: #cbd5e1;
+
+}
+
+
+
+.evidence-button {
+
+    margin-top: 15px;
+
+    padding: 8px 14px;
+
+    border-radius: 6px;
+
+    border: none;
+
+    cursor: pointer;
+
+    background: #2563eb;
+
+    color: white;
+
+}
+
+
+
+.evidence-box {
+
+    margin-top: 15px;
+
+    padding: 15px;
+
+    background: #020617;
+
+    border-radius: 8px;
+
+    overflow-x: auto;
+
+    white-space: pre-wrap;
+
+    color: #cbd5e1;
+
+}
