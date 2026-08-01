@@ -5,6 +5,10 @@ import api from "./api/client";
 import ScanForm from "./components/ScanForm";
 import ScanProgress from "./components/ScanProgress";
 
+import SecurityScore from "./components/SecurityScore";
+import FindingsSummary from "./components/FindingsSummary";
+import FindingsList from "./components/FindingsList";
+
 import "./App.css";
 
 
@@ -92,6 +96,7 @@ function App() {
                     VulnScan Lite
                 </h1>
 
+
                 <p>
                     Automated Website Security Scanner
                 </p>
@@ -114,31 +119,35 @@ function App() {
                 />
 
 
+
                 {
                     scan?.report &&
 
-                    <div className="report-card">
+                    <>
 
-                        <h2>
-                            Security Report
-                        </h2>
+                        <SecurityScore
+                            score={scan.score}
+                            grade={scan.grade}
+                        />
 
 
-                        <p>
-                            Findings:
-                            {" "}
-                            {
-                                scan.report.findings?.length || 0
+
+                        <FindingsSummary
+                            findings={
+                                scan.report.findings || []
                             }
-                        </p>
+                        />
 
 
-                        <p>
-                            Scan completed successfully.
-                        </p>
+
+                        <FindingsList
+                            findings={
+                                scan.report.findings || []
+                            }
+                        />
 
 
-                    </div>
+                    </>
 
                 }
 
