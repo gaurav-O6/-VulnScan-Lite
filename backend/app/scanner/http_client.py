@@ -1,3 +1,4 @@
+from time import perf_counter
 from typing import Optional
 
 import requests
@@ -42,9 +43,12 @@ class HTTPClient:
             {
                 "success": bool,
                 "response": Response | None,
+                "elapsed_ms": float | None,
                 "error": str | None
             }
         """
+
+        start_time = perf_counter()
 
         try:
             response = self.session.get(
@@ -54,16 +58,29 @@ class HTTPClient:
                 allow_redirects=self.allow_redirects,
             )
 
+            elapsed_ms = round(
+                (perf_counter() - start_time) * 1000,
+                2,
+            )
+
             return {
                 "success": True,
                 "response": response,
+                "elapsed_ms": elapsed_ms,
                 "error": None,
             }
 
         except RequestException as exc:
+
+            elapsed_ms = round(
+                (perf_counter() - start_time) * 1000,
+                2,
+            )
+
             return {
                 "success": False,
                 "response": None,
+                "elapsed_ms": elapsed_ms,
                 "error": str(exc),
             }
 

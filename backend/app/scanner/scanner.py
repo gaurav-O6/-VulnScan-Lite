@@ -7,6 +7,7 @@ from app.scanner.checks.cms import CMSDetector
 from app.scanner.checks.cookies import CookieChecker
 from app.scanner.checks.exposure import ExposureChecker
 from app.scanner.checks.methods import HTTPMethodChecker
+from app.scanner.checks.response_info import ResponseInfoChecker
 
 from app.scanner.scoring import ScoringEngine
 from app.scanner.report_builder import ReportBuilder
@@ -39,10 +40,11 @@ class Scanner:
 
         self.http_method_checker = HTTPMethodChecker()
 
+        self.response_info_checker = ResponseInfoChecker()
+
         self.scoring_engine = ScoringEngine()
 
         self.report_builder = ReportBuilder()
-
 
     def scan(self, url: str) -> dict:
         """
@@ -58,9 +60,7 @@ class Scanner:
         6. Build final report
         """
 
-
         validation = self.validator.validate(url)
-
 
         if not validation["valid"]:
 
@@ -72,12 +72,9 @@ class Scanner:
                 "error": validation["error"],
             }
 
-
         target = validation["normalized_url"]
 
-
         response_result = self.http_client.get(target)
-
 
         if not response_result["success"]:
 
@@ -89,58 +86,51 @@ class Scanner:
                 "error": response_result["error"],
             }
 
-
         response = response_result["response"]
-
 
         context = {
             "url": target,
             "response": response,
+            "elapsed_ms": response_result["elapsed_ms"],
         }
-
-
 
         #
         # Security checks
         #
 
-        header_results = self.header_checker.analyze(
+        response_info_results = self.response_info_checker.analyze(
             context
         )
 
+        header_results = self.header_checker.analyze(
+            context
+        )
 
         ssl_results = self.ssl_checker.analyze(
             context
         )
 
-
         technology_results = self.cms_detector.analyze(
             context
         )
-
 
         cookie_results = self.cookie_checker.analyze(
             context
         )
 
-
         exposure_results = self.exposure_checker.analyze(
             context
         )
 
-
         http_method_results = self.http_method_checker.analyze(
             context
         )
-
-
 
         #
         # Combine findings
         #
 
         findings = []
-
 
         findings.extend(
             header_results.get(
@@ -149,14 +139,12 @@ class Scanner:
             )
         )
 
-
         findings.extend(
             cookie_results.get(
                 "findings",
                 []
             )
         )
-
 
         findings.extend(
             exposure_results.get(
@@ -165,15 +153,12 @@ class Scanner:
             )
         )
 
-
         findings.extend(
             http_method_results.get(
                 "findings",
                 []
             )
         )
-
-
 
         #
         # Calculate security score
@@ -183,14 +168,13 @@ class Scanner:
             findings
         )
 
-
-
         #
         # Generate final report
         #
 
         report = self.report_builder.build(
             target=response.url,
+            response_info=response_info_results,
             headers=header_results,
             ssl=ssl_results,
             technology=technology_results,
@@ -199,8 +183,6 @@ class Scanner:
             http_methods=http_method_results,
             score=score_results,
         )
-
-
 
         return {
 
@@ -215,8 +197,6 @@ class Scanner:
             "error": None,
 
         }
-
-
 
     def close(self):
         """

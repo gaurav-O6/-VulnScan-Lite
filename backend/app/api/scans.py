@@ -82,13 +82,7 @@ def get_scan(scan_id: int):
             "status": scan.status,
             "score": scan.score,
             "grade": scan.grade,
-            "ssl_valid": scan.ssl_valid,
-            "ssl_expiry": scan.ssl_expiry,
-            "cms_name": scan.cms_name,
-            "cms_version": scan.cms_version,
-            "headers": scan.headers_json,
-            "findings": scan.findings_json,
-            "remediation": scan.remediation_json,
+            "report": scan.report_json,
             "created_at": (
                 scan.created_at.isoformat()
                 if scan.created_at

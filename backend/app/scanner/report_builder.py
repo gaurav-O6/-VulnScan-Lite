@@ -6,6 +6,7 @@ class ReportBuilder:
     def build(
         self,
         target: str,
+        response_info: dict,
         headers: dict,
         ssl: dict,
         technology: dict,
@@ -20,6 +21,9 @@ class ReportBuilder:
         Args:
             target:
                 Scanned URL.
+
+            response_info:
+                General HTTP response information.
 
             headers:
                 HTTP security header analysis result.
@@ -49,6 +53,7 @@ class ReportBuilder:
         return {
             "target": target,
             "security_score": score,
+            "response_info": response_info,
             "security_headers": headers,
             "ssl": ssl,
             "technology": technology,

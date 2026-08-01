@@ -40,30 +40,16 @@ class ScanService:
                 return scan
 
             report = result["report"]
-
             security_score = report["security_score"]
-            ssl_report = report["ssl"]
-            technology = report["technology"]
-            header_report = report["security_headers"]
 
             scan.status = "completed"
-
             scan.score = security_score["score"]
             scan.grade = security_score["grade"]
 
-            scan.ssl_valid = ssl_report["valid"]
-            scan.ssl_expiry = ssl_report["expires_on"]
-
-            if technology["cms"]:
-                scan.cms_name = technology["cms"][0]["name"]
-            else:
-                scan.cms_name = None
-
-            scan.cms_version = None
-
-            scan.headers_json = header_report
-            scan.findings_json = security_score["failed_checks"]
-            scan.remediation_json = None
+            #
+            # Store the complete scan report.
+            #
+            scan.report_json = report
 
             scan.completed_at = datetime.utcnow()
 
