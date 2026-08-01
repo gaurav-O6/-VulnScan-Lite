@@ -9,6 +9,9 @@ class ReportBuilder:
         headers: dict,
         ssl: dict,
         technology: dict,
+        cookies: dict,
+        exposure: dict,
+        http_methods: dict,
         score: dict,
     ) -> dict:
         """
@@ -19,7 +22,7 @@ class ReportBuilder:
                 Scanned URL.
 
             headers:
-                Header analysis result.
+                HTTP security header analysis result.
 
             ssl:
                 SSL inspection result.
@@ -27,11 +30,20 @@ class ReportBuilder:
             technology:
                 CMS and technology detection result.
 
+            cookies:
+                Cookie security analysis result.
+
+            exposure:
+                Information disclosure analysis result.
+
+            http_methods:
+                HTTP method security analysis result.
+
             score:
-                Security score result.
+                Security scoring result.
 
         Returns:
-            Structured scan report.
+            Structured vulnerability scan report.
         """
 
         return {
@@ -40,4 +52,7 @@ class ReportBuilder:
             "security_headers": headers,
             "ssl": ssl,
             "technology": technology,
+            "cookies": cookies,
+            "exposure": exposure,
+            "http_methods": http_methods,
         }
