@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from app.config import Config
 from app.extensions import db, migrate
@@ -23,6 +24,18 @@ def create_app():
 
     # Load configuration
     app.config.from_object(Config)
+
+    # Enable CORS for frontend communication
+    CORS(
+        app,
+        resources={
+            r"/api/*": {
+                "origins": [
+                    "http://localhost:5173",
+                ]
+            }
+        },
+    )
 
     # Initialize extensions
     db.init_app(app)

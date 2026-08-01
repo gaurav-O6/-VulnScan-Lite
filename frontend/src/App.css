@@ -1,0 +1,153 @@
+.app {
+
+    min-height: 100vh;
+
+    background:
+        #0f172a;
+
+    color:
+        #e2e8f0;
+
+    padding:
+        40px;
+
+    font-family:
+        Arial, sans-serif;
+
+}
+
+
+
+.header {
+
+    text-align:
+        center;
+
+    margin-bottom:
+        40px;
+
+}
+
+
+
+.header h1 {
+
+    font-size:
+        42px;
+
+}
+
+
+
+.header p {
+
+    color:
+        #94a3b8;
+
+}
+
+
+
+main {
+
+    max-width:
+        800px;
+
+    margin:
+        auto;
+
+}
+
+
+
+.scan-form {
+
+    display:
+        flex;
+
+    gap:
+        10px;
+
+}
+
+
+
+.scan-form input {
+
+    flex:
+        1;
+
+    padding:
+        14px;
+
+    border-radius:
+        8px;
+
+    border:
+        none;
+
+    font-size:
+        16px;
+
+}
+
+
+
+.scan-form button {
+
+    padding:
+        14px 24px;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    background:
+        #2563eb;
+
+    color:
+        white;
+
+    cursor:
+        pointer;
+
+}
+
+
+
+.scan-form button:disabled {
+
+    opacity:
+        0.6;
+
+}
+
+
+
+.scan-card,
+.report-card {
+
+    margin-top:
+        30px;
+
+    padding:
+        25px;
+
+    border-radius:
+        12px;
+
+    background:
+        #1e293b;
+
+}
+
+
+
+.error {
+
+    color:
+        #ef4444;
+
+}
