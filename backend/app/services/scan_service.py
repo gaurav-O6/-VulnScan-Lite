@@ -8,12 +8,6 @@ from app.scanner.scanner import Scanner
 class ScanService:
     """
     Service responsible for orchestrating vulnerability scans.
-
-    Responsibilities:
-    - Create scan records
-    - Execute the scanner
-    - Persist scan results
-    - Update scan status
     """
 
     def __init__(self):
@@ -22,13 +16,6 @@ class ScanService:
     def run_scan(self, url: str) -> Scan:
         """
         Execute a vulnerability scan and persist the results.
-
-        Args:
-            url:
-                Target URL.
-
-        Returns:
-            Persisted Scan model.
         """
 
         scan = Scan(
@@ -75,9 +62,7 @@ class ScanService:
             scan.cms_version = None
 
             scan.headers_json = header_report
-
             scan.findings_json = security_score["failed_checks"]
-
             scan.remediation_json = None
 
             scan.completed_at = datetime.utcnow()
@@ -88,3 +73,20 @@ class ScanService:
 
         finally:
             self.scanner.close()
+
+    def get_scan(self, scan_id: int) -> Scan | None:
+        """
+        Retrieve a scan by its ID.
+
+        Args:
+            scan_id:
+                Scan identifier.
+
+        Returns:
+            Scan instance if found, otherwise None.
+        """
+
+        return db.session.get(
+            Scan,
+            scan_id,
+        )
