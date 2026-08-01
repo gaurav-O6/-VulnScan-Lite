@@ -1,17 +1,14 @@
-import { useState } from "react";
-
-
 function FindingCard({ finding }) {
-
-    const [showEvidence, setShowEvidence] = useState(false);
 
 
     const severity =
-        finding.severity?.toLowerCase() || "info";
+        finding.severity?.toLowerCase() || "informational";
 
 
     const status =
-        finding.status?.toLowerCase() || "unknown";
+        finding.status === "failed"
+            ? "failed"
+            : "passed";
 
 
 
@@ -20,7 +17,7 @@ function FindingCard({ finding }) {
         <div className="finding-card">
 
 
-            <div className="finding-header">
+            <div className="finding-top">
 
 
                 <h3>
@@ -28,31 +25,46 @@ function FindingCard({ finding }) {
                 </h3>
 
 
-                <div className="finding-badges">
 
+                <span
+                    className={`severity-badge ${severity}`}
+                >
 
-                    <span
-                        className={`severity-badge ${severity}`}
-                    >
-                        {finding.severity}
-                    </span>
+                    {finding.severity}
 
-
-                    <span
-                        className={`status-badge ${status}`}
-                    >
-                        {
-                            status === "passed"
-                                ? "✓ Passed"
-                                : "✕ Failed"
-                        }
-                    </span>
-
-
-                </div>
+                </span>
 
 
             </div>
+
+
+
+
+
+            <div className="finding-status">
+
+
+                <span>
+                    Status
+                </span>
+
+
+                <strong
+                    className={status}
+                >
+
+                    {
+                        finding.status === "failed"
+                            ? "✕ Failed"
+                            : "✓ Passed"
+                    }
+
+                </strong>
+
+
+            </div>
+
+
 
 
 
@@ -64,47 +76,57 @@ function FindingCard({ finding }) {
 
 
 
+
+
             {
                 finding.evidence &&
 
-                <>
+                <details className="evidence-box">
 
-                    <button
 
-                        className="evidence-button"
+                    <summary>
 
-                        onClick={() =>
-                            setShowEvidence(
-                                !showEvidence
-                            )
-                        }
+                        View Evidence
 
-                    >
-
-                        {
-                            showEvidence
-                                ? "Hide Evidence ▲"
-                                : "Show Evidence ▼"
-                        }
-
-                    </button>
+                    </summary>
 
 
 
-                    {
-                        showEvidence &&
+                    <pre>
 
-                        <pre className="evidence-box">
+                        {finding.evidence}
 
-                            {finding.evidence}
+                    </pre>
 
-                        </pre>
 
-                    }
-
-                </>
+                </details>
 
             }
+
+
+
+
+            {
+                finding.recommendation &&
+
+                <div className="recommendation">
+
+
+                    <strong>
+                        Recommendation
+                    </strong>
+
+
+                    <p>
+                        {finding.recommendation}
+                    </p>
+
+
+                </div>
+
+            }
+
+
 
 
         </div>

@@ -1,22 +1,122 @@
 function SecurityScore({ score, grade }) {
 
+
+    function getRiskLabel(score) {
+
+
+        if (score >= 90) {
+
+            return "Excellent Security Posture";
+
+        }
+
+
+        if (score >= 75) {
+
+            return "Good Security Posture";
+
+        }
+
+
+        if (score >= 50) {
+
+            return "Needs Improvement";
+
+        }
+
+
+        return "High Risk";
+
+    }
+
+
+
+
+
+    function getScoreClass(score) {
+
+
+        if (score >= 90) {
+
+            return "score-good";
+
+        }
+
+
+        if (score >= 75) {
+
+            return "score-medium";
+
+        }
+
+
+        return "score-danger";
+
+    }
+
+
+
+
+
     return (
 
-        <div className="report-card">
-
-            <h2>
-                Security Score
-            </h2>
+        <div className="security-score-card">
 
 
-            <h1>
-                {score}/100
-            </h1>
+
+            <div
+                className={
+                    `score-circle ${getScoreClass(score)}`
+                }
+            >
 
 
-            <p>
-                Grade: {grade}
-            </p>
+                <span className="score-number">
+
+                    {score}
+
+                </span>
+
+
+                <span className="score-outof">
+
+                    /100
+
+                </span>
+
+
+            </div>
+
+
+
+
+
+            <div className="score-details">
+
+
+                <h2>
+                    Security Score
+                </h2>
+
+
+
+                <p>
+                    {getRiskLabel(score)}
+                </p>
+
+
+
+
+                <div className="grade-badge">
+
+                    Grade {grade}
+
+                </div>
+
+
+
+            </div>
+
 
 
         </div>

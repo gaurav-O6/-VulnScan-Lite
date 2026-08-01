@@ -1,75 +1,192 @@
 function FindingsSummary({ findings }) {
 
 
-    const failed = findings.filter(
-        item => item.status === "failed"
-    );
+    const total = findings.length;
 
 
     const passed = findings.filter(
+
         item => item.status === "passed"
-    );
+
+    ).length;
 
 
-    const severity = {
+
+    const failed = findings.filter(
+
+        item => item.status === "failed"
+
+    ).length;
+
+
+
+
+    const severityCount = {
+
+
         High: 0,
+
         Medium: 0,
+
         Low: 0,
+
+        Informational: 0
+
     };
 
 
-    failed.forEach(item => {
 
-        if (severity[item.severity] !== undefined) {
 
-            severity[item.severity]++;
+
+    findings.forEach((finding) => {
+
+
+        if (severityCount[finding.severity] !== undefined) {
+
+            severityCount[finding.severity]++;
 
         }
+
 
     });
 
 
 
+
+
     return (
 
-        <div className="report-card">
+        <div className="summary-section">
+
 
             <h2>
-                Findings Summary
+                Assessment Summary
             </h2>
 
 
-            <p>
-                Total Findings: {findings.length}
-            </p>
 
 
-            <p>
-                Passed: {passed.length}
-            </p>
+            <div className="summary-grid">
 
 
-            <p>
-                Failed: {failed.length}
-            </p>
+
+                <div className="summary-card">
 
 
-            <br />
+                    <span>
+                        Total Findings
+                    </span>
 
 
-            <p>
-                High: {severity.High}
-            </p>
+                    <strong>
+                        {total}
+                    </strong>
 
 
-            <p>
-                Medium: {severity.Medium}
-            </p>
+                </div>
 
 
-            <p>
-                Low: {severity.Low}
-            </p>
+
+
+
+                <div className="summary-card success">
+
+
+                    <span>
+                        Passed
+                    </span>
+
+
+                    <strong>
+                        {passed}
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div className="summary-card danger">
+
+
+                    <span>
+                        Failed
+                    </span>
+
+
+                    <strong>
+                        {failed}
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div className="summary-card">
+
+
+                    <span>
+                        Risk Level
+                    </span>
+
+
+                    <strong>
+
+                        {
+                            failed === 0
+
+                            ? "Low"
+
+                            : failed <= 3
+
+                            ? "Moderate"
+
+                            : "High"
+
+                        }
+
+                    </strong>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+            <div className="severity-breakdown">
+
+
+                <span>
+                    High: {severityCount.High}
+                </span>
+
+
+                <span>
+                    Medium: {severityCount.Medium}
+                </span>
+
+
+                <span>
+                    Low: {severityCount.Low}
+                </span>
+
+
+                <span>
+                    Info: {severityCount.Informational}
+                </span>
+
+
+            </div>
+
 
 
         </div>
