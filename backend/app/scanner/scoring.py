@@ -1,6 +1,9 @@
+from app.scanner.finding import normalize_finding
+
+
 class ScoringEngine:
     """
-    Calculates security score from scan findings.
+    Calculates security score from standardized findings.
     """
 
     MAX_SCORE = 100
@@ -9,52 +12,85 @@ class ScoringEngine:
         "High": 10,
         "Medium": 5,
         "Low": 2,
+        "Informational": 0,
     }
 
-    def calculate(self, findings: list) -> dict:
+
+    def calculate(
+        self,
+        findings: list,
+    ) -> dict:
         """
         Calculate security score.
 
-        Args:
-            findings:
-                List of security findings.
-
-        Returns:
-            Score report.
+        Accepts both:
+        - old checker dictionaries
+        - normalized findings
         """
 
+
         score = self.MAX_SCORE
+
 
         summary = {
             "High": 0,
             "Medium": 0,
             "Low": 0,
+            "Informational": 0,
         }
+
 
         failed_checks = []
 
-        for finding in findings:
+
+        for index, finding in enumerate(findings, start=1):
+
+            if not isinstance(finding, dict):
+                continue
+
+
+            if "category" not in finding:
+
+                finding = normalize_finding(
+                    finding,
+                    category="unknown",
+                    finding_id=f"F-{index:04d}",
+                )
+
 
             if finding.get("status") != "failed":
                 continue
 
+
             severity = finding.get(
                 "severity",
-                "Low"
+                "Low",
             )
+
 
             deduction = self.SEVERITY_DEDUCTION.get(
                 severity,
-                0
+                0,
             )
+
 
             score -= deduction
 
-            summary[severity] += 1
 
-            failed_checks.append(finding)
+            if severity in summary:
+                summary[severity] += 1
 
-        score = max(score, 0)
+
+            failed_checks.append(
+                finding
+            )
+
+
+        score = max(
+            score,
+            0,
+        )
+
 
         return {
             "score": score,
@@ -63,21 +99,31 @@ class ScoringEngine:
             "failed_checks": failed_checks,
         }
 
-    def _grade(self, score: int) -> str:
+
+
+    def _grade(
+        self,
+        score: int,
+    ) -> str:
         """
-        Convert score to letter grade.
+        Convert numeric score into grade.
         """
+
 
         if score >= 90:
             return "A"
 
+
         if score >= 80:
             return "B"
+
 
         if score >= 70:
             return "C"
 
+
         if score >= 60:
             return "D"
+
 
         return "F"
