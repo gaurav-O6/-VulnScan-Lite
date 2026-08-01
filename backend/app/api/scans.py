@@ -106,3 +106,40 @@ def get_scan(scan_id: int):
             ),
         }
     )
+
+
+@scans_bp.route("", methods=["GET"])
+def get_scan_history():
+    """
+    Retrieve scan history.
+    """
+
+    service = ScanService()
+
+    scans = service.get_all_scans()
+
+    history = []
+
+    for scan in scans:
+
+        history.append(
+            {
+                "id": scan.id,
+                "target_url": scan.target_url,
+                "status": scan.status,
+                "score": scan.score,
+                "grade": scan.grade,
+                "created_at": (
+                    scan.created_at.isoformat()
+                    if scan.created_at
+                    else None
+                ),
+                "completed_at": (
+                    scan.completed_at.isoformat()
+                    if scan.completed_at
+                    else None
+                ),
+            }
+        )
+
+    return jsonify(history)

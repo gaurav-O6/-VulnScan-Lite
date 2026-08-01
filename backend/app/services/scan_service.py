@@ -77,16 +77,20 @@ class ScanService:
     def get_scan(self, scan_id: int) -> Scan | None:
         """
         Retrieve a scan by its ID.
-
-        Args:
-            scan_id:
-                Scan identifier.
-
-        Returns:
-            Scan instance if found, otherwise None.
         """
 
         return db.session.get(
             Scan,
             scan_id,
+        )
+
+    def get_all_scans(self) -> list[Scan]:
+        """
+        Retrieve all scans ordered by newest first.
+        """
+
+        return (
+            Scan.query.order_by(
+                Scan.created_at.desc()
+            ).all()
         )
