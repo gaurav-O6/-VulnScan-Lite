@@ -2,18 +2,19 @@
    VULNSCAN LITE STYLES
 ========================= */
 
-@import "./src/styles/variables.css";
-@import "./src/styles/globals.css";
-@import "./src/styles/layout.css";
-@import "./src/styles/navigation.css";
 
-@import "./src/styles/scanner.css";
-@import "./src/styles/dashboard.css";
-@import "./src/styles/security-score.css";
+@import "../styles/variables.css";
+@import "../styles/globals.css";
+@import "../styles/layout.css";
+@import "../styles/navigation.css";
 
-@import "./src/styles/findings.css";
-@import "./src/styles/history.css";
-@import "./src/styles/footer.css";
+@import "../styles/scanner.css";
+@import "../styles/dashboard.css";
+@import "../styles/security-score.css";
 
-@import "./src/styles/animations.css";
-@import "./src/styles/responsive.css";
+@import "../styles/findings.css";
+@import "../styles/history.css";
+@import "../styles/footer.css";
+
+@import "../styles/animations.css";
+@import "../styles/responsive.css";

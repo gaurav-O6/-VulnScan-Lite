@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+
 import api from "../api/client";
-import "../styles/history.css";
+import "../../styles/history.css";
 
 
 function History({ onSelectScan }) {
@@ -76,6 +77,7 @@ function History({ onSelectScan }) {
 
 
 
+
     function getStatusClass(status) {
 
 
@@ -102,6 +104,7 @@ function History({ onSelectScan }) {
 
 
 
+
     function getGradeClass(grade) {
 
 
@@ -116,6 +119,7 @@ function History({ onSelectScan }) {
 
 
     }
+
 
 
 
@@ -149,6 +153,7 @@ function History({ onSelectScan }) {
 
 
     }
+
 
 
 
@@ -194,6 +199,7 @@ function History({ onSelectScan }) {
 
 
 
+
     function getRiskClass(score) {
 
 
@@ -234,6 +240,7 @@ function History({ onSelectScan }) {
 
 
 
+
     if (loading) {
 
 
@@ -254,6 +261,7 @@ function History({ onSelectScan }) {
 
 
 
+
     return (
 
         <section className="history-container">
@@ -265,11 +273,14 @@ function History({ onSelectScan }) {
                     Assessment History
                 </h2>
 
+
                 <p>
                     Previously completed website security assessments.
                 </p>
 
+
             </div>
+
 
 
 
@@ -296,11 +307,13 @@ function History({ onSelectScan }) {
                             </h3>
 
 
+
                             <p className="history-date">
 
                                 {formatDate(scan.created_at)}
 
                             </p>
+
 
 
 
@@ -347,6 +360,8 @@ function History({ onSelectScan }) {
 
 
 
+
+
                         <div className="history-metrics">
 
 
@@ -365,6 +380,7 @@ function History({ onSelectScan }) {
 
 
                             </div>
+
 
 
 
@@ -396,6 +412,7 @@ function History({ onSelectScan }) {
 
 
 
+
                             <div>
 
                                 <span>
@@ -411,6 +428,7 @@ function History({ onSelectScan }) {
 
 
                             </div>
+
 
 
 
