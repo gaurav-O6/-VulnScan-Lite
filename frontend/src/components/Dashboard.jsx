@@ -17,7 +17,30 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
+    const severityCounts = {
+
+        critical: findings.filter(
+            (item) => item.severity?.toLowerCase() === "critical"
+        ).length,
+
+        high: findings.filter(
+            (item) => item.severity?.toLowerCase() === "high"
+        ).length,
+
+        medium: findings.filter(
+            (item) => item.severity?.toLowerCase() === "medium"
+        ).length,
+
+        low: findings.filter(
+            (item) => item.severity?.toLowerCase() === "low"
+        ).length
+
+    };
+
+
+
     function handleDownload() {
+
 
         const reportData = JSON.stringify(
             scan.report,
@@ -39,16 +62,87 @@ function Dashboard({ scan, onNewScan }) {
 
         const link = document.createElement("a");
 
+
         link.href = url;
 
         link.download = "vulnscan-report.json";
+
 
         link.click();
 
 
         URL.revokeObjectURL(url);
 
+
     }
+
+
+
+
+
+    function getRiskClass(score) {
+
+
+        if (score >= 90) {
+
+            return "dashboard-risk-low";
+
+        }
+
+
+        if (score >= 70) {
+
+            return "dashboard-risk-medium";
+
+        }
+
+
+        if (score >= 40) {
+
+            return "dashboard-risk-high";
+
+        }
+
+
+        return "dashboard-risk-critical";
+
+
+    }
+
+
+
+
+
+    function getRiskLabel(score) {
+
+
+        if (score >= 90) {
+
+            return "Low Risk";
+
+        }
+
+
+        if (score >= 70) {
+
+            return "Medium Risk";
+
+        }
+
+
+        if (score >= 40) {
+
+            return "High Risk";
+
+        }
+
+
+        return "Critical Risk";
+
+
+    }
+
+
 
 
 
@@ -75,10 +169,9 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
-
                 <div className="dashboard-status">
 
-                    <span className="status-complete">
+                    <span>
 
                         ● Scan Completed
 
@@ -97,8 +190,11 @@ function Dashboard({ scan, onNewScan }) {
 
 
                 <button
+
                     className="report-action-button"
+
                     onClick={handleDownload}
+
                 >
 
                     Download Report
@@ -107,12 +203,16 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
+
                 {
                     onNewScan &&
 
                     <button
+
                         className="secondary-action-button"
+
                         onClick={onNewScan}
+
                     >
 
                         New Scan
@@ -140,7 +240,9 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
+
             <div className="scan-meta-card">
+
 
 
                 <div>
@@ -154,7 +256,9 @@ function Dashboard({ scan, onNewScan }) {
                         {scan.target_url}
                     </strong>
 
+
                 </div>
+
 
 
 
@@ -166,13 +270,39 @@ function Dashboard({ scan, onNewScan }) {
                     </span>
 
 
-                    <strong className="status-complete">
+                    <span className="meta-badge dashboard-status-completed">
 
                         Completed
 
-                    </strong>
+                    </span>
+
 
                 </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Risk Level
+                    </span>
+
+
+                    <span
+                        className={
+                            `meta-badge ${getRiskClass(scan.score)}`
+                        }
+                    >
+
+                        {getRiskLabel(scan.score)}
+
+                    </span>
+
+
+                </div>
+
 
 
 
@@ -190,7 +320,9 @@ function Dashboard({ scan, onNewScan }) {
 
                     </strong>
 
+
                 </div>
+
 
 
 
@@ -208,10 +340,113 @@ function Dashboard({ scan, onNewScan }) {
 
                     </strong>
 
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Total Findings
+                    </span>
+
+
+                    <strong>
+
+                        {findings.length}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Critical Issues
+                    </span>
+
+
+                    <strong>
+
+                        {severityCounts.critical}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        High Risk
+                    </span>
+
+
+                    <strong>
+
+                        {severityCounts.high}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Medium Risk
+                    </span>
+
+
+                    <strong>
+
+                        {severityCounts.medium}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Low Risk
+                    </span>
+
+
+                    <strong>
+
+                        {severityCounts.low}
+
+                    </strong>
+
+
                 </div>
 
 
             </div>
+
+
 
 
 
@@ -222,6 +457,7 @@ function Dashboard({ scan, onNewScan }) {
                 findings={findings}
 
             />
+
 
 
 
@@ -242,7 +478,9 @@ function Dashboard({ scan, onNewScan }) {
 
         </section>
 
+
     );
+
 
 }
 

@@ -37,16 +37,13 @@
     gap:40px;
 
     background:
-
         linear-gradient(
             145deg,
             #0a0f16,
             #070b12
         );
 
-    border:
-
-        1px solid var(--border);
+    border:1px solid var(--border);
 
     border-radius:16px;
 
@@ -58,45 +55,13 @@
 
 
 
-.history-card::after {
-
-    content:"";
-
-    position:absolute;
-
-    left:0;
-
-    top:0;
-
-    height:100%;
-
-    width:5px;
-
-    background:
-
-        linear-gradient(
-            180deg,
-            var(--blue),
-            var(--blue-dark)
-        );
-
-}
-
-
-
 .history-card:hover {
 
-    transform:
+    transform:translateY(-5px);
 
-        translateY(-5px);
+    border-color:var(--blue);
 
-    border-color:
-
-        var(--blue);
-
-    box-shadow:
-
-        0 20px 45px rgba(0,0,0,.45);
+    box-shadow:0 20px 45px rgba(0,0,0,.45);
 
 }
 
@@ -111,6 +76,12 @@
 
     flex:1;
 
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
 }
 
 
@@ -119,18 +90,11 @@
 
     margin:0;
 
-    color:
+    color:var(--text-primary);
 
-        var(--text-primary);
-
-    font-family:
-
-        "Orbitron",
-        sans-serif;
+    font-family:"Orbitron",sans-serif;
 
     font-size:20px;
-
-    letter-spacing:.5px;
 
     font-weight:700;
 
@@ -144,15 +108,7 @@
 
     margin-top:12px;
 
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    color:
-
-        var(--text-secondary);
+    color:var(--text-secondary);
 
     font-size:14px;
 
@@ -160,48 +116,84 @@
 
 
 
-.history-status {
+/* =========================
+   BADGE CONTAINER
+========================= */
 
-    display:inline-flex;
 
-    margin-top:16px;
+.history-badges {
 
-    padding:
+    margin-top:18px;
 
-        7px 16px;
+    display:flex;
 
-    border-radius:999px;
+    align-items:center;
 
-    font-size:12px;
+    justify-content:flex-start;
 
-    font-weight:700;
+    gap:16px;
 
-    text-transform:uppercase;
-
-    letter-spacing:.05em;
+    flex-wrap:wrap;
 
 }
 
 
 
 /* =========================
-   STATUS COLORS
+   COMMON BADGE STYLE
+========================= */
+
+
+.history-status,
+.history-risk {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    height:34px;
+
+    min-width:max-content;
+
+    padding:0 18px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    white-space:nowrap;
+
+    box-sizing:border-box;
+
+    line-height:normal;
+
+}
+
+
+
+/* =========================
+   STATUS BADGES
 ========================= */
 
 
 .status-completed {
 
     background:
-
-        rgba(74,222,128,.12);
+        rgba(74,222,128,.18);
 
     border:
-
-        1px solid rgba(74,222,128,.3);
+        1px solid rgba(74,222,128,.55);
 
     color:
-
-        var(--green);
+        #4ade80;
 
 }
 
@@ -210,16 +202,13 @@
 .status-failed {
 
     background:
-
-        rgba(248,113,113,.12);
+        rgba(248,113,113,.18);
 
     border:
-
-        1px solid rgba(248,113,113,.3);
+        1px solid rgba(248,113,113,.55);
 
     color:
-
-        var(--red);
+        #f87171;
 
 }
 
@@ -228,16 +217,78 @@
 .status-running {
 
     background:
-
-        rgba(250,204,21,.12);
+        rgba(250,204,21,.18);
 
     border:
-
-        1px solid rgba(250,204,21,.3);
+        1px solid rgba(250,204,21,.55);
 
     color:
+        #facc15;
 
-        var(--yellow);
+}
+
+
+
+/* =========================
+   RISK BADGES
+========================= */
+
+
+.history-risk.risk-low {
+
+    background:
+        rgba(74,222,128,.18);
+
+    border:
+        1px solid rgba(74,222,128,.55);
+
+    color:
+        #4ade80;
+
+}
+
+
+
+.history-risk.risk-medium {
+
+    background:
+        rgba(250,204,21,.18);
+
+    border:
+        1px solid rgba(250,204,21,.55);
+
+    color:
+        #facc15;
+
+}
+
+
+
+.history-risk.risk-high {
+
+    background:
+        rgba(248,113,113,.18);
+
+    border:
+        1px solid rgba(248,113,113,.55);
+
+    color:
+        #f87171;
+
+}
+
+
+
+.history-risk.risk-critical {
+
+    background:
+        rgba(220,38,38,.25);
+
+    border:
+        1px solid rgba(220,38,38,.8);
+
+    color:
+        #dc2626;
 
 }
 
@@ -264,37 +315,17 @@
 
     min-width:110px;
 
-    padding:
-
-        16px 20px;
+    padding:16px 20px;
 
     text-align:center;
 
     background:
-
         rgba(5,7,11,.75);
 
     border:
-
         1px solid var(--border);
 
     border-radius:12px;
-
-    transition:.25s ease;
-
-}
-
-
-
-.history-metrics div:hover {
-
-    border-color:
-
-        var(--blue);
-
-    transform:
-
-        translateY(-3px);
 
 }
 
@@ -304,15 +335,11 @@
 
     display:block;
 
-    color:
-
-        var(--text-muted);
+    color:var(--text-muted);
 
     font-size:12px;
 
     text-transform:uppercase;
-
-    letter-spacing:.08em;
 
 }
 
@@ -324,16 +351,11 @@
 
     margin-top:8px;
 
-    font-family:
-
-        "Orbitron",
-        sans-serif;
+    font-family:"Orbitron",sans-serif;
 
     font-size:28px;
 
-    color:
-
-        var(--text-primary);
+    color:var(--text-primary);
 
 }
 
@@ -346,9 +368,7 @@
 
 .grade-a {
 
-    color:
-
-        var(--green)!important;
+    color:var(--green)!important;
 
 }
 
@@ -356,9 +376,7 @@
 
 .grade-b {
 
-    color:
-
-        var(--yellow)!important;
+    color:var(--yellow)!important;
 
 }
 
@@ -368,9 +386,7 @@
 .grade-d,
 .grade-f {
 
-    color:
-
-        var(--red)!important;
+    color:var(--red)!important;
 
 }
 
@@ -385,16 +401,13 @@
 
     height:52px;
 
-    padding:
-
-        0 24px;
+    padding:0 24px;
 
     border:none;
 
     border-radius:12px;
 
     background:
-
         linear-gradient(
             135deg,
             var(--blue-dark),
@@ -405,15 +418,7 @@
 
     cursor:pointer;
 
-    font-family:inherit;
-
     font-weight:700;
-
-    transition:.25s ease;
-
-    box-shadow:
-
-        0 10px 25px rgba(37,99,235,.25);
 
 }
 
@@ -421,13 +426,7 @@
 
 .view-report-button:hover {
 
-    transform:
-
-        translateY(-3px);
-
-    box-shadow:
-
-        0 15px 35px rgba(37,99,235,.4);
+    transform:translateY(-3px);
 
 }
 
@@ -442,9 +441,7 @@
 
     min-height:300px;
 
-    padding:
-
-        70px 30px;
+    padding:70px 30px;
 
     display:flex;
 
@@ -456,44 +453,13 @@
 
     text-align:center;
 
-    background:
+    background:var(--bg-panel);
 
-        var(--bg-panel);
-
-    border:
-
-        1px dashed var(--border);
+    border:1px dashed var(--border);
 
     border-radius:16px;
 
-    color:
-
-        var(--text-secondary);
-
-}
-
-
-
-.history-empty::before {
-
-    content:
-
-        "NO SCAN DATA";
-
-    display:block;
-
-    margin-bottom:15px;
-
-    font-family:
-
-        "Orbitron",
-        sans-serif;
-
-    font-size:22px;
-
-    color:
-
-        var(--blue);
+    color:var(--text-secondary);
 
 }
 
@@ -520,7 +486,7 @@
 
         width:100%;
 
-        justify-content:space-between;
+        flex-wrap:wrap;
 
     }
 
@@ -543,5 +509,58 @@
         width:100%;
 
     }
+
+
+    .history-badges {
+
+        gap:12px;
+
+    }
+
+}
+
+/* =========================
+   FINAL BADGE ALIGNMENT FIX
+========================= */
+
+
+.history-badges {
+
+    display:flex !important;
+
+    flex-direction:row !important;
+
+    align-items:center !important;
+
+    justify-content:flex-start !important;
+
+    gap:16px !important;
+
+}
+
+
+
+.history-status,
+.history-risk {
+
+    display:flex !important;
+
+    align-items:center !important;
+
+    justify-content:center !important;
+
+    height:34px !important;
+
+    padding:0 18px !important;
+
+    margin:0 !important;
+
+    line-height:1 !important;
+
+    vertical-align:middle !important;
+
+    transform:none !important;
+
+    position:static !important;
 
 }

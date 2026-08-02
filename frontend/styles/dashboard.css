@@ -17,6 +17,11 @@
 
 
 
+/* =========================
+   DASHBOARD HEADER
+========================= */
+
+
 .dashboard-header {
 
     padding:28px 32px;
@@ -53,10 +58,7 @@
 
     margin:0;
 
-    font-family:
-
-        "Orbitron",
-        sans-serif;
+    font-family:"Orbitron",sans-serif;
 
     font-size:32px;
 
@@ -74,9 +76,7 @@
 
     max-width:650px;
 
-    color:
-
-        var(--text-secondary);
+    color:var(--text-secondary);
 
     line-height:1.7;
 
@@ -84,11 +84,16 @@
 
 
 
+
+
+/* =========================
+   DASHBOARD STATUS
+========================= */
+
+
 .dashboard-status {
 
-    padding:
-
-        12px 22px;
+    padding:12px 22px;
 
     border-radius:999px;
 
@@ -100,9 +105,7 @@
 
         1px solid rgba(74,222,128,.35);
 
-    color:
-
-        var(--green);
+    color:var(--green);
 
     font-weight:600;
 
@@ -114,9 +117,7 @@
 
 .dashboard-status:hover {
 
-    transform:
-
-        translateY(-2px);
+    transform:translateY(-2px);
 
     box-shadow:
 
@@ -138,6 +139,8 @@
 
 
 
+
+
 /* =========================
    DASHBOARD GRID
 ========================= */
@@ -147,9 +150,7 @@
 
     display:grid;
 
-    grid-template-columns:
-
-        2fr 1fr;
+    grid-template-columns:2fr 1fr;
 
     gap:28px;
 
@@ -175,6 +176,8 @@
     margin-top:15px;
 
 }
+
+
 
 
 
@@ -229,6 +232,8 @@
 
 
 
+
+
 /* =========================
    DASHBOARD ACTIONS
 ========================= */
@@ -255,9 +260,7 @@
 
     height:46px;
 
-    padding:
-
-        0 26px;
+    padding:0 26px;
 
     border-radius:12px;
 
@@ -277,8 +280,6 @@
 
 
 
-/* Download Report */
-
 .report-action-button {
 
     border:none;
@@ -293,29 +294,17 @@
 
     color:white;
 
-    box-shadow:
-
-        0 10px 25px rgba(37,99,235,.25);
-
 }
 
 
 
 .report-action-button:hover {
 
-    transform:
-
-        translateY(-3px);
-
-    box-shadow:
-
-        0 15px 35px rgba(37,99,235,.4);
+    transform:translateY(-3px);
 
 }
 
 
-
-/* New Scan */
 
 .secondary-action-button {
 
@@ -343,15 +332,9 @@
 
         var(--blue);
 
-    background:
-
-        var(--bg-panel-hover);
-
-    transform:
-
-        translateY(-3px);
-
 }
+
+
 
 
 
@@ -390,6 +373,8 @@
 
 
 
+
+
 /* =========================
    SUMMARY CARDS
 ========================= */
@@ -399,9 +384,7 @@
 
     display:grid;
 
-    grid-template-columns:
-
-        repeat(4,1fr);
+    grid-template-columns:repeat(4,1fr);
 
     gap:18px;
 
@@ -447,9 +430,7 @@
 
 .summary-card.success strong {
 
-    color:
-
-        var(--green);
+    color:var(--green);
 
 }
 
@@ -457,11 +438,11 @@
 
 .summary-card.danger strong {
 
-    color:
-
-        var(--red);
+    color:var(--red);
 
 }
+
+
 
 
 
@@ -476,9 +457,7 @@
 
     display:grid;
 
-    grid-template-columns:
-
-        repeat(4,1fr);
+    grid-template-columns:repeat(4,1fr);
 
     gap:16px;
 
@@ -488,9 +467,7 @@
 
 .severity-pill {
 
-    padding:
-
-        18px 20px;
+    padding:18px 20px;
 
     display:flex;
 
@@ -524,9 +501,7 @@
 
 .severity-pill.high {
 
-    border-left:
-
-        3px solid var(--red);
+    border-left:3px solid var(--red);
 
 }
 
@@ -534,9 +509,7 @@
 
 .severity-pill.medium {
 
-    border-left:
-
-        3px solid #fbbf24;
+    border-left:3px solid #fbbf24;
 
 }
 
@@ -544,58 +517,16 @@
 
 .severity-pill.low {
 
-    border-left:
-
-        3px solid var(--yellow);
+    border-left:3px solid var(--yellow);
 
 }
 
 
-
-.severity-pill.informational {
-
-    border-left:
-
-        3px solid var(--blue);
-
-}
-
-
-
-.severity-pill.high strong {
-
-    color:var(--red);
-
-}
-
-
-
-.severity-pill.medium strong {
-
-    color:#fbbf24;
-
-}
-
-
-
-.severity-pill.low strong {
-
-    color:var(--yellow);
-
-}
-
-
-
-.severity-pill.informational strong {
-
-    color:var(--blue);
-
-}
 
 
 
 /* =========================
-   SCAN META
+   SCAN META CARD
 ========================= */
 
 
@@ -605,9 +536,7 @@
 
     display:grid;
 
-    grid-template-columns:
-
-        repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr);
 
     gap:22px;
 
@@ -623,11 +552,13 @@
 
     gap:10px;
 
+    align-items:flex-start;
+
 }
 
 
 
-.scan-meta-card span {
+.scan-meta-card span:not(.meta-badge) {
 
     color:
 
@@ -643,10 +574,344 @@
 
 
 
-.status-complete {
+.scan-meta-card strong {
 
     color:
 
-        var(--green)!important;
+        var(--text-primary);
+
+}
+
+
+
+
+
+/* =========================
+   BADGE SYSTEM
+========================= */
+
+
+.meta-badge {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex:0 0 auto;
+
+    width:auto;
+
+    max-width:max-content;
+
+    align-self:flex-start;
+
+    height:32px;
+
+    padding:0 18px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    line-height:1;
+
+    white-space:nowrap;
+
+    box-sizing:border-box;
+
+}
+
+
+
+
+
+/* =========================
+   COMPLETED BADGE
+========================= */
+
+
+.status-completed {
+
+    background:
+
+        rgba(74,222,128,.18);
+
+    border:
+
+        1px solid rgba(74,222,128,.55);
+
+    color:
+
+        #4ade80!important;
+
+}
+
+
+
+
+
+/* =========================
+   RISK BADGES
+========================= */
+
+
+.risk-low {
+
+    background:
+
+        rgba(74,222,128,.18);
+
+    border:
+
+        1px solid rgba(74,222,128,.55);
+
+    color:
+
+        #4ade80!important;
+
+}
+
+
+
+.risk-medium {
+
+    background:
+
+        rgba(250,204,21,.18);
+
+    border:
+
+        1px solid rgba(250,204,21,.55);
+
+    color:
+
+        #facc15!important;
+
+}
+
+
+
+.risk-high {
+
+    background:
+
+        rgba(248,113,113,.18);
+
+    border:
+
+        1px solid rgba(248,113,113,.55);
+
+    color:
+
+        #f87171!important;
+
+}
+
+
+
+.risk-critical {
+
+    background:
+
+        rgba(220,38,38,.25);
+
+    border:
+
+        1px solid rgba(220,38,38,.8);
+
+    color:
+
+        #dc2626!important;
+
+}
+
+
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+
+@media(max-width:900px) {
+
+
+    .dashboard-header {
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+
+    .scan-meta-card {
+
+        grid-template-columns:1fr;
+
+    }
+
+
+}
+
+
+
+@media(max-width:700px) {
+
+
+    .summary-grid,
+    .severity-breakdown {
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .dashboard-actions {
+
+        justify-content:flex-start;
+
+        flex-wrap:wrap;
+
+    }
+
+
+}
+
+/* =========================
+   BADGE SYSTEM
+========================= */
+
+.meta-badge {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:max-content;
+
+    max-width:max-content;
+
+    align-self:flex-start;
+
+    flex:none;
+
+    height:32px;
+
+    padding:0 18px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    line-height:1;
+
+    white-space:nowrap;
+
+    box-sizing:border-box;
+
+}
+
+
+
+/* =========================
+   COMPLETED BADGE
+========================= */
+
+
+.status-completed {
+
+    background:
+
+        rgba(74,222,128,.18);
+
+    border:
+
+        1px solid rgba(74,222,128,.55);
+
+    color:#4ade80!important;
+
+}
+
+
+
+/* =========================
+   RISK BADGES
+========================= */
+
+
+.risk-low {
+
+    background:
+
+        rgba(74,222,128,.18);
+
+    border:
+
+        1px solid rgba(74,222,128,.55);
+
+    color:#4ade80!important;
+
+}
+
+
+.risk-medium {
+
+    background:
+
+        rgba(250,204,21,.18);
+
+    border:
+
+        1px solid rgba(250,204,21,.55);
+
+    color:#facc15!important;
+
+}
+
+
+.risk-high {
+
+    background:
+
+        rgba(248,113,113,.18);
+
+    border:
+
+        1px solid rgba(248,113,113,.55);
+
+    color:#f87171!important;
+
+}
+
+
+.risk-critical {
+
+    background:
+
+        rgba(220,38,38,.25);
+
+    border:
+
+        1px solid rgba(220,38,38,.8);
+
+    color:#dc2626!important;
 
 }

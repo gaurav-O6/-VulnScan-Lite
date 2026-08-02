@@ -1,7 +1,8 @@
-       function SecurityScore({ score, grade }) {
+function SecurityScore({ score, grade }) {
 
 
     function getRiskLabel(score) {
+
 
         if (score >= 90) {
 
@@ -26,12 +27,15 @@
 
         return "High Risk";
 
+
     }
 
 
 
 
+
     function getScoreClass(score) {
+
 
         if (score >= 75) {
 
@@ -49,19 +53,22 @@
 
         return "score-danger";
 
+
     }
+
 
 
 
 
     return (
 
+
         <section className="security-score-card">
 
 
-            <div
-                className={`score-circle ${getScoreClass(score)}`}
-            >
+
+            <div className={`score-circle ${getScoreClass(score)}`}>
+
 
                 <span className="score-number">
 
@@ -83,7 +90,9 @@
 
 
 
+
             <div className="score-details">
+
 
 
                 <span className="score-title">
@@ -93,11 +102,15 @@
                 </span>
 
 
+
+
                 <h2>
 
                     {getRiskLabel(score)}
 
                 </h2>
+
+
 
 
                 <p>
@@ -111,10 +124,13 @@
 
 
 
+
                 <div className="score-stats">
 
 
-                    <div>
+
+                    <div className="score-stat-box">
+
 
                         <span>
 
@@ -136,7 +152,9 @@
 
 
 
-                    <div>
+
+                    <div className="score-stat-box">
+
 
                         <span>
 
@@ -145,7 +163,7 @@
                         </span>
 
 
-                        <strong>
+                        <strong className="assessment-status">
 
                             Completed
 
@@ -155,15 +173,22 @@
                     </div>
 
 
+
                 </div>
+
+
 
 
             </div>
 
 
+
+
         </section>
 
+
     );
+
 
 }
 

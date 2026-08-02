@@ -4,54 +4,180 @@ import api from "../api/client";
 
 function ScanForm({ onScanCreated }) {
 
+
     const [url, setUrl] = useState("");
+
     const [loading, setLoading] = useState(false);
+
     const [error, setError] = useState("");
 
 
-    async function handleSubmit(e) {
 
-        e.preventDefault();
 
-        setError("");
+    function validateUrl(value) {
 
-        if (!url.trim()) {
-            setError("Please enter a target URL.");
-            return;
+
+        let formattedUrl = value.trim();
+
+
+        if (!formattedUrl) {
+
+            return {
+                valid:false,
+                message:"Please enter a target URL."
+            };
+
         }
+
+
+
+        if (
+            !formattedUrl.startsWith("http://") &&
+            !formattedUrl.startsWith("https://")
+        ) {
+
+            formattedUrl = "https://" + formattedUrl;
+
+        }
+
 
 
         try {
 
+            const parsed = new URL(formattedUrl);
+
+
+            if (
+                !parsed.hostname.includes(".")
+            ) {
+
+                return {
+                    valid:false,
+                    message:"Please enter a valid website URL."
+                };
+
+            }
+
+
+            return {
+                valid:true,
+                url:formattedUrl
+            };
+
+
+        } catch {
+
+
+            return {
+                valid:false,
+                message:"Please enter a valid website URL."
+            };
+
+        }
+
+    }
+
+
+
+
+
+    async function handleSubmit(e) {
+
+
+        e.preventDefault();
+
+
+        setError("");
+
+
+
+        const validation = validateUrl(url);
+
+
+
+        if (!validation.valid) {
+
+            setError(validation.message);
+
+            return;
+
+        }
+
+
+
+
+
+        try {
+
+
             setLoading(true);
+
 
 
             const response = await api.post(
                 "/scans",
                 {
-                    url: url.trim(),
+                    url: validation.url,
                 }
             );
 
 
-            onScanCreated(response.data.scan_id);
+
+            onScanCreated(
+                response.data.scan_id
+            );
+
+
+
+            setUrl("");
+
 
 
         } catch (err) {
 
-            console.error(err);
+
+            console.error(
+                "Scan creation error:",
+                err
+            );
+
 
             setError(
-                "Failed to create scan."
+                "Failed to create scan. Please try again."
             );
+
 
         } finally {
 
+
             setLoading(false);
+
+
+        }
+
+
+    }
+
+
+
+
+
+    function handleChange(e) {
+
+
+        setUrl(e.target.value);
+
+
+        if (error) {
+
+            setError("");
 
         }
 
     }
+
+
+
 
 
 
@@ -62,35 +188,56 @@ function ScanForm({ onScanCreated }) {
             onSubmit={handleSubmit}
         >
 
+
             <input
+
                 type="url"
+
                 placeholder="https://example.com"
+
                 value={url}
-                onChange={
-                    (e) => setUrl(e.target.value)
-                }
+
+                onChange={handleChange}
+
+                disabled={loading}
+
+                aria-label="Target website URL"
+
             />
 
 
+
+
             <button
+
                 type="submit"
+
                 disabled={loading}
+
             >
 
                 {
                     loading
-                        ? "Starting..."
-                        : "Start Scan"
+                    ? "Initializing Scan..."
+                    : "Start Scan"
                 }
+
 
             </button>
 
 
+
+
+
             {
                 error &&
+
                 <p className="error">
+
                     {error}
+
                 </p>
+
             }
 
 

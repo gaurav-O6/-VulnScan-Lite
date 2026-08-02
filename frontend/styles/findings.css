@@ -173,7 +173,7 @@
 
     background:
 
-        var(--yellow);
+        var(--green);
 
 }
 
@@ -246,25 +246,39 @@
 
 
 /* =========================
-   SEVERITY BADGE
+   SEVERITY BADGES
 ========================= */
 
 
 .severity-badge {
 
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    height:32px;
+
     padding:
 
-        8px 18px;
+        0 18px;
 
     border-radius:999px;
 
     font-size:12px;
 
-    font-weight:700;
+    font-weight:800;
 
     text-transform:uppercase;
 
     letter-spacing:.08em;
+
+    white-space:nowrap;
+
+    line-height:1;
+
+    box-sizing:border-box;
 
     box-shadow:
 
@@ -274,57 +288,85 @@
 
 
 
+/* HIGH */
+
+
 .severity-badge.high {
 
     background:
 
-        var(--red-bg);
+        rgba(248,113,113,.18);
+
+    border:
+
+        1px solid rgba(248,113,113,.55);
 
     color:
 
-        #fecaca;
+        #f87171;
 
 }
 
+
+
+/* MEDIUM */
 
 
 .severity-badge.medium {
 
     background:
 
-        #422006;
+        rgba(250,204,21,.18);
+
+    border:
+
+        1px solid rgba(250,204,21,.55);
 
     color:
 
-        #fde68a;
+        #facc15;
 
 }
 
+
+
+/* LOW */
 
 
 .severity-badge.low {
 
     background:
 
-        #3f2f00;
+        rgba(74,222,128,.18);
+
+    border:
+
+        1px solid rgba(74,222,128,.55);
 
     color:
 
-        #fef08a;
+        #4ade80;
 
 }
 
+
+
+/* INFORMATIONAL */
 
 
 .severity-badge.informational {
 
     background:
 
-        #082f49;
+        rgba(56,189,248,.18);
+
+    border:
+
+        1px solid rgba(56,189,248,.55);
 
     color:
 
-        #bae6fd;
+        #38bdf8;
 
 }
 
@@ -568,5 +610,6 @@
             1fr;
 
     }
+
 
 }

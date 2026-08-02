@@ -1,6 +1,3 @@
-from app.scanner.finding import normalize_finding
-
-
 class ScoringEngine:
     """
     Calculates security score from standardized findings.
@@ -50,6 +47,8 @@ class ScoringEngine:
 
 
             if "category" not in finding:
+
+                from app.scanner.finding import normalize_finding
 
                 finding = normalize_finding(
                     finding,
