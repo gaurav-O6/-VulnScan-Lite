@@ -1,0 +1,155 @@
+.app {
+    min-height: 100vh;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(56, 189, 248, 0.06),
+            transparent 38%
+        ),
+        var(--bg-main);
+}
+
+
+/* Cyber grid background */
+
+.app::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+
+        linear-gradient(
+            rgba(56,189,248,.035) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(56,189,248,.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    pointer-events: none;
+
+    opacity: .35;
+}
+
+
+.app > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+
+/* Header */
+
+.header {
+
+    text-align: center;
+
+    margin-bottom: 45px;
+
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    font-family: "Orbitron", sans-serif;
+
+    font-size: 58px;
+
+    font-weight: 800;
+
+    letter-spacing: 4px;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 25px rgba(56,189,248,.18);
+
+}
+
+
+.header h1::after {
+
+    content: "";
+
+    display: block;
+
+    width: 100px;
+
+    height: 3px;
+
+    margin: 18px auto 0;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue-dark),
+            var(--blue)
+        );
+}
+
+
+
+.header p {
+
+    margin-top: 18px;
+
+    color: var(--text-secondary);
+
+    font-size: 17px;
+
+}
+
+
+
+/* Common panel styling */
+
+.security-score-card,
+.scan-meta-card,
+.summary-card,
+.severity-pill,
+.finding-card,
+.history-card {
+
+    background: var(--bg-panel);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    transition: .25s ease;
+
+}
+
+
+.security-score-card:hover,
+.scan-meta-card:hover,
+.summary-card:hover,
+.severity-pill:hover,
+.finding-card:hover,
+.history-card:hover {
+
+    border-color: var(--border-hover);
+
+    transform: translateY(-4px);
+
+    box-shadow: var(--shadow);
+
+}

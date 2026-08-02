@@ -1,0 +1,547 @@
+/* =========================
+   HISTORY PAGE
+========================= */
+
+
+.history-container {
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+
+
+/* =========================
+   HISTORY CARD
+========================= */
+
+
+.history-card {
+
+    position:relative;
+
+    padding:32px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:40px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #0a0f16,
+            #070b12
+        );
+
+    border:
+
+        1px solid var(--border);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    transition:.3s ease;
+
+}
+
+
+
+.history-card::after {
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    height:100%;
+
+    width:5px;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            var(--blue),
+            var(--blue-dark)
+        );
+
+}
+
+
+
+.history-card:hover {
+
+    transform:
+
+        translateY(-5px);
+
+    border-color:
+
+        var(--blue);
+
+    box-shadow:
+
+        0 20px 45px rgba(0,0,0,.45);
+
+}
+
+
+
+/* =========================
+   HISTORY MAIN
+========================= */
+
+
+.history-main {
+
+    flex:1;
+
+}
+
+
+
+.history-main h3 {
+
+    margin:0;
+
+    color:
+
+        var(--text-primary);
+
+    font-family:
+
+        "Orbitron",
+        sans-serif;
+
+    font-size:20px;
+
+    letter-spacing:.5px;
+
+    font-weight:700;
+
+    word-break:break-word;
+
+}
+
+
+
+.history-date {
+
+    margin-top:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:
+
+        var(--text-secondary);
+
+    font-size:14px;
+
+}
+
+
+
+.history-status {
+
+    display:inline-flex;
+
+    margin-top:16px;
+
+    padding:
+
+        7px 16px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.05em;
+
+}
+
+
+
+/* =========================
+   STATUS COLORS
+========================= */
+
+
+.status-completed {
+
+    background:
+
+        rgba(74,222,128,.12);
+
+    border:
+
+        1px solid rgba(74,222,128,.3);
+
+    color:
+
+        var(--green);
+
+}
+
+
+
+.status-failed {
+
+    background:
+
+        rgba(248,113,113,.12);
+
+    border:
+
+        1px solid rgba(248,113,113,.3);
+
+    color:
+
+        var(--red);
+
+}
+
+
+
+.status-running {
+
+    background:
+
+        rgba(250,204,21,.12);
+
+    border:
+
+        1px solid rgba(250,204,21,.3);
+
+    color:
+
+        var(--yellow);
+
+}
+
+
+
+/* =========================
+   METRICS
+========================= */
+
+
+.history-metrics {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+.history-metrics div {
+
+    min-width:110px;
+
+    padding:
+
+        16px 20px;
+
+    text-align:center;
+
+    background:
+
+        rgba(5,7,11,.75);
+
+    border:
+
+        1px solid var(--border);
+
+    border-radius:12px;
+
+    transition:.25s ease;
+
+}
+
+
+
+.history-metrics div:hover {
+
+    border-color:
+
+        var(--blue);
+
+    transform:
+
+        translateY(-3px);
+
+}
+
+
+
+.history-metrics span {
+
+    display:block;
+
+    color:
+
+        var(--text-muted);
+
+    font-size:12px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+}
+
+
+
+.history-metrics strong {
+
+    display:block;
+
+    margin-top:8px;
+
+    font-family:
+
+        "Orbitron",
+        sans-serif;
+
+    font-size:28px;
+
+    color:
+
+        var(--text-primary);
+
+}
+
+
+
+/* =========================
+   GRADES
+========================= */
+
+
+.grade-a {
+
+    color:
+
+        var(--green)!important;
+
+}
+
+
+
+.grade-b {
+
+    color:
+
+        var(--yellow)!important;
+
+}
+
+
+
+.grade-c,
+.grade-d,
+.grade-f {
+
+    color:
+
+        var(--red)!important;
+
+}
+
+
+
+/* =========================
+   REPORT BUTTON
+========================= */
+
+
+.view-report-button {
+
+    height:52px;
+
+    padding:
+
+        0 24px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--blue-dark),
+            #0284c7
+        );
+
+    color:white;
+
+    cursor:pointer;
+
+    font-family:inherit;
+
+    font-weight:700;
+
+    transition:.25s ease;
+
+    box-shadow:
+
+        0 10px 25px rgba(37,99,235,.25);
+
+}
+
+
+
+.view-report-button:hover {
+
+    transform:
+
+        translateY(-3px);
+
+    box-shadow:
+
+        0 15px 35px rgba(37,99,235,.4);
+
+}
+
+
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+
+.history-empty {
+
+    min-height:300px;
+
+    padding:
+
+        70px 30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    background:
+
+        var(--bg-panel);
+
+    border:
+
+        1px dashed var(--border);
+
+    border-radius:16px;
+
+    color:
+
+        var(--text-secondary);
+
+}
+
+
+
+.history-empty::before {
+
+    content:
+
+        "NO SCAN DATA";
+
+    display:block;
+
+    margin-bottom:15px;
+
+    font-family:
+
+        "Orbitron",
+        sans-serif;
+
+    font-size:22px;
+
+    color:
+
+        var(--blue);
+
+}
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+
+@media(max-width:800px) {
+
+
+    .history-card {
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+
+    .history-metrics {
+
+        width:100%;
+
+        justify-content:space-between;
+
+    }
+
+}
+
+
+
+@media(max-width:600px) {
+
+
+    .history-metrics {
+
+        flex-direction:column;
+
+    }
+
+
+    .history-metrics div {
+
+        width:100%;
+
+    }
+
+}

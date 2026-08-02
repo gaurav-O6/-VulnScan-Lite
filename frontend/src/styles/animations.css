@@ -1,0 +1,303 @@
+/* =========================
+   CYBER GRID BACKGROUND
+========================= */
+
+.app {
+    position:relative;
+    overflow:hidden;
+}
+
+
+.app::before {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(
+            rgba(56,189,248,.035) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(56,189,248,.035) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        45px 45px;
+
+    pointer-events:none;
+
+    opacity:.35;
+
+}
+
+
+.app > * {
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+
+/* =========================
+   PAGE ANIMATION
+========================= */
+
+
+.scanner-panel,
+.scan-card,
+.dashboard,
+.history-container {
+
+    animation:
+        fadeSlide .45s ease;
+
+}
+
+
+@keyframes fadeSlide {
+
+    from {
+
+        opacity:0;
+
+        transform:
+            translateY(15px);
+
+    }
+
+
+    to {
+
+        opacity:1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+
+/* =========================
+   DASHBOARD FLOW
+========================= */
+
+
+.dashboard-header {
+
+    animation:
+        fadeSlide .5s ease;
+
+}
+
+
+.dashboard-top-grid {
+
+    animation:
+        fadeSlide .6s ease;
+
+}
+
+
+.dashboard-findings {
+
+    animation:
+        fadeSlide .7s ease;
+
+}
+
+
+
+/* =========================
+   BUTTON FEEDBACK
+========================= */
+
+
+button {
+
+    transition:
+
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+
+}
+
+
+button:active {
+
+    transform:
+        scale(.96);
+
+}
+
+
+
+/* =========================
+   SCAN RUNNING ANIMATIONS
+========================= */
+
+
+.scan-status-running {
+
+    animation:
+        statusPulse 1.5s infinite;
+
+}
+
+
+
+@keyframes statusPulse {
+
+
+    0% {
+
+        box-shadow:
+            0 0 0 rgba(250,204,21,0);
+
+    }
+
+
+    50% {
+
+        box-shadow:
+            0 0 20px rgba(250,204,21,.35);
+
+    }
+
+
+    100% {
+
+        box-shadow:
+            0 0 0 rgba(250,204,21,0);
+
+    }
+
+}
+
+
+
+.pulse-dot {
+
+    animation:
+        pulse 1.2s infinite;
+
+    box-shadow:
+        0 0 15px var(--yellow);
+
+}
+
+
+
+@keyframes pulse {
+
+
+    0% {
+
+        transform:
+            scale(1);
+
+        opacity:1;
+
+    }
+
+
+    50% {
+
+        transform:
+            scale(1.8);
+
+        opacity:.4;
+
+    }
+
+
+    100% {
+
+        transform:
+            scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+
+
+/* =========================
+   SCAN BEAM
+========================= */
+
+
+.scan-animation-progress {
+
+    animation:
+        scanMove 1.8s infinite;
+
+}
+
+
+
+@keyframes scanMove {
+
+
+    from {
+
+        transform:
+            translateX(-120%);
+
+    }
+
+
+    to {
+
+        transform:
+            translateX(300%);
+
+    }
+
+}
+
+
+
+.scan-progress-message::after {
+
+    animation:
+        scanBeam 1.8s infinite;
+
+}
+
+
+
+@keyframes scanBeam {
+
+
+    from {
+
+        transform:
+            translateX(0);
+
+    }
+
+
+    to {
+
+        transform:
+            translateX(350%);
+
+    }
+
+}
