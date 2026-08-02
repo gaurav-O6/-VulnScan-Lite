@@ -62,7 +62,6 @@ function Dashboard({ scan, onNewScan }) {
 
                 <div>
 
-
                     <h2>
                         Security Assessment Dashboard
                     </h2>
@@ -72,7 +71,6 @@ function Dashboard({ scan, onNewScan }) {
                         Passive vulnerability assessment report for the scanned target.
                     </p>
 
-
                 </div>
 
 
@@ -80,13 +78,11 @@ function Dashboard({ scan, onNewScan }) {
 
                 <div className="dashboard-status">
 
-
                     <span className="status-complete">
 
                         ● Scan Completed
 
                     </span>
-
 
                 </div>
 
@@ -111,7 +107,6 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
-
                 {
                     onNewScan &&
 
@@ -133,90 +128,85 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
-            <div className="dashboard-top-grid">
+            <SecurityScore
 
+                score={scan.score}
 
-                <div className="dashboard-left-column">
+                grade={scan.grade}
 
-
-                    <div className="scan-meta-card">
-
-
-                        <div>
-
-                            <span>
-                                Target
-                            </span>
-
-
-                            <strong>
-                                {scan.target_url}
-                            </strong>
-
-
-                        </div>
-
-
-
-
-                        <div>
-
-                            <span>
-                                Status
-                            </span>
-
-
-                            <strong className="status-complete">
-
-                                Completed
-
-                            </strong>
-
-
-                        </div>
-
-
-
-
-                        <div>
-
-                            <span>
-                                Security Score
-                            </span>
-
-
-                            <strong>
-                                {scan.score}/100
-                            </strong>
-
-
-                        </div>
-
-
-                    </div>
+            />
 
 
 
 
 
-                    <FindingsSummary
-                        findings={findings}
-                    />
+            <div className="scan-meta-card">
 
+
+                <div>
+
+                    <span>
+                        Target
+                    </span>
+
+
+                    <strong>
+                        {scan.target_url}
+                    </strong>
 
                 </div>
 
 
 
 
-                <div className="dashboard-right-column">
+                <div>
+
+                    <span>
+                        Status
+                    </span>
 
 
-                    <SecurityScore
-                        score={scan.score}
-                        grade={scan.grade}
-                    />
+                    <strong className="status-complete">
 
+                        Completed
+
+                    </strong>
+
+                </div>
+
+
+
+
+                <div>
+
+                    <span>
+                        Security Score
+                    </span>
+
+
+                    <strong>
+
+                        {scan.score}/100
+
+                    </strong>
+
+                </div>
+
+
+
+
+                <div>
+
+                    <span>
+                        Grade
+                    </span>
+
+
+                    <strong>
+
+                        {scan.grade}
+
+                    </strong>
 
                 </div>
 
@@ -227,11 +217,23 @@ function Dashboard({ scan, onNewScan }) {
 
 
 
+            <FindingsSummary
+
+                findings={findings}
+
+            />
+
+
+
+
+
             <div className="dashboard-findings">
 
 
                 <FindingsList
+
                     findings={findings}
+
                 />
 
 

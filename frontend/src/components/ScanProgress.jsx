@@ -1,8 +1,40 @@
 function ScanProgress({ scan }) {
 
-
     if (!scan) {
-        return null;
+
+        return (
+
+            <div className="scan-card scan-empty-state">
+
+                <div className="scan-empty-icon">
+
+                    🛡️
+
+                </div>
+
+                <h2>
+
+                    Ready to Scan
+
+                </h2>
+
+                <p>
+
+                    Enter a website URL above to begin a passive security assessment.
+                    Your live scan status and results will appear here.
+
+                </p>
+
+                <div className="scan-empty-hint">
+
+                    No active scan
+
+                </div>
+
+            </div>
+
+        );
+
     }
 
 
@@ -14,13 +46,11 @@ function ScanProgress({ scan }) {
 
         }
 
-
         if (status === "failed") {
 
             return "scan-status-failed";
 
         }
-
 
         return "scan-status-running";
 
@@ -36,13 +66,11 @@ function ScanProgress({ scan }) {
 
         }
 
-
         if (status === "failed") {
 
             return "Scan Failed";
 
         }
-
 
         return "Scanning Website";
 
@@ -60,26 +88,19 @@ function ScanProgress({ scan }) {
             }`}
         >
 
-
             <div className="scan-card-header">
 
-
                 <div className="scan-title">
-
 
                     <h2>
                         Scan Status
                     </h2>
 
-
                     <p>
                         Live security assessment progress.
                     </p>
 
-
                 </div>
-
-
 
                 <span
                     className={`scan-status-badge ${getStatusClass(scan.status)}`}
@@ -89,11 +110,7 @@ function ScanProgress({ scan }) {
 
                 </span>
 
-
             </div>
-
-
-
 
 
             {
@@ -108,46 +125,40 @@ function ScanProgress({ scan }) {
             }
 
 
-
-
-
             <div className="scan-info-grid">
 
-
                 <div className="scan-info-box">
 
                     <span>
+
                         Target
+
                     </span>
 
-
                     <strong>
+
                         {scan.target_url}
+
                     </strong>
 
-
                 </div>
-
-
-
 
 
                 <div className="scan-info-box">
 
                     <span>
+
                         Current Status
+
                     </span>
 
-
                     <strong>
+
                         {scan.status}
+
                     </strong>
 
-
                 </div>
-
-
-
 
 
                 {
@@ -155,46 +166,42 @@ function ScanProgress({ scan }) {
 
                     <>
 
-
                         <div className="scan-info-box">
 
                             <span>
+
                                 Security Score
+
                             </span>
 
-
                             <strong>
+
                                 {scan.score}/100
+
                             </strong>
 
-
                         </div>
-
-
-
 
 
                         <div className="scan-info-box">
 
                             <span>
+
                                 Grade
+
                             </span>
 
-
                             <strong>
+
                                 {scan.grade}
+
                             </strong>
 
-
                         </div>
-
 
                     </>
 
                 }
-
-
-
 
 
                 {
@@ -211,9 +218,6 @@ function ScanProgress({ scan }) {
                 }
 
 
-
-
-
                 {
                     scan.status === "failed" &&
 
@@ -225,15 +229,12 @@ function ScanProgress({ scan }) {
 
                 }
 
-
             </div>
-
 
         </div>
 
     );
 
 }
-
 
 export default ScanProgress;
