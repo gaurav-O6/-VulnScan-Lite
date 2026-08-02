@@ -3,12 +3,50 @@ import FindingsSummary from "./FindingsSummary";
 import FindingsList from "./FindingsList";
 
 
-function Dashboard({ scan }) {
+function Dashboard({ scan, onNewScan }) {
 
 
     if (!scan?.report) {
 
         return null;
+
+    }
+
+
+    const findings = scan.report.findings || [];
+
+
+
+    function handleDownload() {
+
+        const reportData = JSON.stringify(
+            scan.report,
+            null,
+            2
+        );
+
+
+        const blob = new Blob(
+            [reportData],
+            {
+                type:"application/json"
+            }
+        );
+
+
+        const url = URL.createObjectURL(blob);
+
+
+        const link = document.createElement("a");
+
+        link.href = url;
+
+        link.download = "vulnscan-report.json";
+
+        link.click();
+
+
+        URL.revokeObjectURL(url);
 
     }
 
@@ -19,46 +57,36 @@ function Dashboard({ scan }) {
         <section className="dashboard">
 
 
-            <div className="scan-meta-card">
+            <div className="dashboard-header">
 
 
                 <div>
 
-                    <span>
-                        Target
-                    </span>
 
-                    <strong>
-                        {scan.target_url}
-                    </strong>
+                    <h2>
+                        Security Assessment Dashboard
+                    </h2>
+
+
+                    <p>
+                        Passive vulnerability assessment report for the scanned target.
+                    </p>
+
 
                 </div>
 
 
 
-                <div>
 
-                    <span>
-                        Status
+                <div className="dashboard-status">
+
+
+                    <span className="status-complete">
+
+                        ● Scan Completed
+
                     </span>
 
-                    <strong className="status-complete">
-                        Completed
-                    </strong>
-
-                </div>
-
-
-
-                <div>
-
-                    <span>
-                        Score
-                    </span>
-
-                    <strong>
-                        {scan.score}/100
-                    </strong>
 
                 </div>
 
@@ -69,37 +97,145 @@ function Dashboard({ scan }) {
 
 
 
-            <SecurityScore
-
-                score={scan.score}
-
-                grade={scan.grade}
-
-            />
+            <div className="dashboard-actions">
 
 
+                <button
+                    className="report-action-button"
+                    onClick={handleDownload}
+                >
+
+                    Download Report
+
+                </button>
 
 
 
-            <FindingsSummary
 
-                findings={
-                    scan.report.findings || []
+                {
+                    onNewScan &&
+
+                    <button
+                        className="secondary-action-button"
+                        onClick={onNewScan}
+                    >
+
+                        New Scan
+
+                    </button>
+
                 }
 
-            />
+
+            </div>
 
 
 
 
 
-            <FindingsList
+            <div className="dashboard-top-grid">
 
-                findings={
-                    scan.report.findings || []
-                }
 
-            />
+                <div className="dashboard-left-column">
+
+
+                    <div className="scan-meta-card">
+
+
+                        <div>
+
+                            <span>
+                                Target
+                            </span>
+
+
+                            <strong>
+                                {scan.target_url}
+                            </strong>
+
+
+                        </div>
+
+
+
+
+                        <div>
+
+                            <span>
+                                Status
+                            </span>
+
+
+                            <strong className="status-complete">
+
+                                Completed
+
+                            </strong>
+
+
+                        </div>
+
+
+
+
+                        <div>
+
+                            <span>
+                                Security Score
+                            </span>
+
+
+                            <strong>
+                                {scan.score}/100
+                            </strong>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <FindingsSummary
+                        findings={findings}
+                    />
+
+
+                </div>
+
+
+
+
+                <div className="dashboard-right-column">
+
+
+                    <SecurityScore
+                        score={scan.score}
+                        grade={scan.grade}
+                    />
+
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <div className="dashboard-findings">
+
+
+                <FindingsList
+                    findings={findings}
+                />
+
+
+            </div>
 
 
         </section>

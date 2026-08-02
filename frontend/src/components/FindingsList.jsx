@@ -1,164 +1,106 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import FindingCard from "./FindingCard";
 
-
 function FindingsList({ findings }) {
-
 
     const [filter, setFilter] = useState("all");
 
-
-
-    if (!findings || findings.length === 0) {
-
-        return (
-
-            <div className="report-card">
-
-                <h2>
-                    Security Findings
-                </h2>
-
-                <p>
-                    No findings available.
-                </p>
-
-            </div>
-
-        );
-
-    }
-
-
-
-
-
-    const filteredFindings = findings.filter(
-
-        (finding) => {
-
-
-            if (filter === "all") {
-
-                return true;
-
-            }
-
-
-
-            if (filter === "failed") {
-
-                return finding.status === "failed";
-
-            }
-
-
-
-            return (
-
-                finding.severity?.toLowerCase() === filter
-
-            );
-
-
-        }
-
-    );
-
-
-
-
-
-
-    const sortedFindings = [
-
-        ...filteredFindings
-
-    ].sort((a, b) => {
-
-
-        const failedA =
-            a.status === "failed" ? 0 : 1;
-
-
-        const failedB =
-            b.status === "failed" ? 0 : 1;
-
-
-
-        if (failedA !== failedB) {
-
-            return failedA - failedB;
-
-        }
-
-
-
-        return 0;
-
-
-    });
-
-
-
-
-
-
-
     const filters = [
-
         {
             label: "All",
             value: "all"
         },
-
         {
             label: "Failed",
             value: "failed"
         },
-
         {
             label: "High",
             value: "high"
         },
-
         {
             label: "Medium",
             value: "medium"
         },
-
         {
             label: "Low",
             value: "low"
         }
-
     ];
 
+    const filteredFindings = useMemo(() => {
 
+        let results = findings;
 
+        if (filter === "failed") {
 
+            results = results.filter(
+                finding => finding.status === "failed"
+            );
 
+        } else if (filter !== "all") {
 
+            results = results.filter(
+                finding =>
+                    finding.severity?.toLowerCase() === filter
+            );
+
+        }
+
+        const severityOrder = {
+            high: 0,
+            medium: 1,
+            low: 2,
+            informational: 3
+        };
+
+        return [...results].sort((a, b) => {
+
+            if (a.status !== b.status) {
+
+                return a.status === "failed" ? -1 : 1;
+
+            }
+
+            return (
+                severityOrder[a.severity?.toLowerCase()] ?? 99
+            ) - (
+                severityOrder[b.severity?.toLowerCase()] ?? 99
+            );
+
+        });
+
+    }, [findings, filter]);
 
     return (
 
-        <div className="findings-container">
+        <section className="findings-container">
 
+            <div className="section-header">
 
+                <div>
 
-            <h2>
-                Security Findings
-            </h2>
+                    <h2>
 
+                        Security Findings
 
+                    </h2>
 
+                    <p>
 
+                        Review detected security issues and recommendations.
+
+                    </p>
+
+                </div>
+
+            </div>
 
             <div className="filter-bar">
 
-
                 {
+
                     filters.map((item) => (
 
                         <button
@@ -185,62 +127,50 @@ function FindingsList({ findings }) {
 
                 }
 
-
             </div>
 
+            {
 
+                filteredFindings.length === 0 ? (
 
+                    <div className="empty-state">
 
+                        <h3>
 
+                            No Findings
 
+                        </h3>
 
-            <div>
+                        <p>
 
+                            No findings match the selected filter.
 
-                {
-                    sortedFindings.map(
-
-                        (finding) => (
-
-                            <FindingCard
-
-                                key={finding.id}
-
-                                finding={finding}
-
-                            />
-
-                        )
-
-                    )
-
-                }
-
-
-
-                {
-                    sortedFindings.length === 0 &&
-
-                    <div className="report-card">
-
-                        No findings match this filter.
+                        </p>
 
                     </div>
 
-                }
+                ) : (
 
+                    filteredFindings.map((finding) => (
 
+                        <FindingCard
 
-            </div>
+                            key={finding.id}
 
+                            finding={finding}
 
+                        />
 
+                    ))
 
-        </div>
+                )
+
+            }
+
+        </section>
 
     );
 
 }
-
 
 export default FindingsList;

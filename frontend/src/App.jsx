@@ -4,10 +4,7 @@ import api from "./api/client";
 
 import ScanForm from "./components/ScanForm";
 import ScanProgress from "./components/ScanProgress";
-
-import SecurityScore from "./components/SecurityScore";
-import FindingsSummary from "./components/FindingsSummary";
-import FindingsList from "./components/FindingsList";
+import Dashboard from "./components/Dashboard";
 
 import History from "./pages/History";
 
@@ -19,18 +16,13 @@ function App() {
 
     const [page, setPage] = useState("scanner");
 
-
     const [scanId, setScanId] = useState(null);
-
 
     const [scan, setScan] = useState(null);
 
 
 
-
-
     function handleScanCreated(id) {
-
 
         setScanId(id);
 
@@ -38,26 +30,32 @@ function App() {
 
         setPage("scanner");
 
-
     }
-
-
-
 
 
 
 
     function handleSelectScan(id) {
 
-
         setScanId(id);
 
         setPage("scanner");
 
-
     }
 
 
+
+
+
+    function handleNewScan() {
+
+        setScanId(null);
+
+        setScan(null);
+
+        setPage("scanner");
+
+    }
 
 
 
@@ -75,9 +73,6 @@ function App() {
 
 
 
-
-
-
         const interval = setInterval(async () => {
 
 
@@ -89,10 +84,7 @@ function App() {
                 );
 
 
-
                 setScan(response.data);
-
-
 
 
 
@@ -104,12 +96,9 @@ function App() {
 
                 ) {
 
-
                     clearInterval(interval);
 
-
                 }
-
 
 
 
@@ -125,30 +114,18 @@ function App() {
             }
 
 
-
-
         }, 2000);
-
-
-
 
 
 
         return () => {
 
-
             clearInterval(interval);
-
 
         };
 
 
-
-
     }, [scanId]);
-
-
-
 
 
 
@@ -160,7 +137,6 @@ function App() {
         <div className="app">
 
 
-
             <header className="header">
 
 
@@ -169,9 +145,8 @@ function App() {
                 </h1>
 
 
-
                 <p>
-                    Automated Website Security Scanner
+                    Automated Website Security Assessment Platform
                 </p>
 
 
@@ -187,6 +162,12 @@ function App() {
 
                 <button
 
+                    className={
+                        page === "scanner"
+                            ? "active-nav"
+                            : ""
+                    }
+
                     onClick={() => setPage("scanner")}
 
                 >
@@ -198,7 +179,14 @@ function App() {
 
 
 
+
                 <button
+
+                    className={
+                        page === "history"
+                            ? "active-nav"
+                            : ""
+                    }
 
                     onClick={() => setPage("history")}
 
@@ -207,7 +195,6 @@ function App() {
                     History
 
                 </button>
-
 
 
             </nav>
@@ -223,7 +210,6 @@ function App() {
             <main>
 
 
-
                 {
                     page === "scanner"
 
@@ -233,11 +219,43 @@ function App() {
                     <>
 
 
-                        <ScanForm
+                        <section className="scanner-panel">
 
-                            onScanCreated={handleScanCreated}
 
-                        />
+                            <div className="section-header">
+
+
+                                <div>
+
+
+                                    <h2>
+                                        Start Security Scan
+                                    </h2>
+
+
+                                    <p>
+                                        Scan a website and generate a security assessment report.
+                                    </p>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+
+
+                            <ScanForm
+
+                                onScanCreated={handleScanCreated}
+
+                            />
+
+
+                        </section>
+
 
 
 
@@ -255,47 +273,17 @@ function App() {
 
 
 
+
                         {
                             scan?.report &&
 
+                            <Dashboard
 
-                            <>
+                                scan={scan}
 
+                                onNewScan={handleNewScan}
 
-                                <SecurityScore
-
-                                    scan={scan}
-
-                                />
-
-
-
-
-
-                                <FindingsSummary
-
-                                    findings={
-                                        scan.report.findings
-                                    }
-
-                                />
-
-
-
-
-
-                                <FindingsList
-
-                                    findings={
-                                        scan.report.findings
-                                    }
-
-                                />
-
-
-
-                            </>
-
+                            />
 
                         }
 
@@ -316,9 +304,53 @@ function App() {
                 }
 
 
-
             </main>
 
+
+
+
+
+
+
+            <footer className="app-footer">
+
+
+                <div>
+
+
+                    <strong>
+                        VulnScan Lite
+                    </strong>
+
+
+                    <p>
+                        Automated passive website security assessment platform.
+                    </p>
+
+
+                </div>
+
+
+
+
+
+                <div className="footer-right">
+
+
+                    <span>
+                        Built for cybersecurity learning & assessment
+                    </span>
+
+
+                    <span>
+                        © {new Date().getFullYear()} VulnScan Lite
+                    </span>
+
+
+                </div>
+
+
+            </footer>
 
 
         </div>
@@ -326,7 +358,6 @@ function App() {
     );
 
 }
-
 
 
 export default App;

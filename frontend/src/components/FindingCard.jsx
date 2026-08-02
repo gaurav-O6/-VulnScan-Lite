@@ -1,80 +1,82 @@
 function FindingCard({ finding }) {
 
-
     const severity =
         finding.severity?.toLowerCase() || "informational";
 
-
-    const status =
-        finding.status === "failed"
-            ? "failed"
-            : "passed";
-
-
+    const failed =
+        finding.status === "failed";
 
     return (
 
-        <div className="finding-card">
-
+        <article className="finding-card">
 
             <div className="finding-top">
 
+                <div className="finding-title">
 
-                <h3>
-                    {finding.name}
-                </h3>
+                    <h3>
+                        {finding.name}
+                    </h3>
 
+                    <p>
+                        {finding.description}
+                    </p>
+
+                </div>
 
 
                 <span
                     className={`severity-badge ${severity}`}
                 >
-
                     {finding.severity}
-
                 </span>
-
 
             </div>
 
 
+            <div className="finding-footer">
+
+                <div className="finding-status">
+
+                    <span>
+                        Assessment Status
+                    </span>
+
+
+                    <strong
+                        className={
+                            failed
+                                ? "failed"
+                                : "passed"
+                        }
+                    >
+                        {failed ? "Failed" : "Passed"}
+                    </strong>
+
+                </div>
 
 
 
-            <div className="finding-status">
+                {
+                    finding.recommendation &&
+
+                    <div className="recommendation">
+
+                        <strong>
+                            Remediation
+                        </strong>
 
 
-                <span>
-                    Status
-                </span>
+                        <p>
+                            {finding.recommendation}
+                        </p>
 
 
-                <strong
-                    className={status}
-                >
-
-                    {
-                        finding.status === "failed"
-                            ? "✕ Failed"
-                            : "✓ Passed"
-                    }
-
-                </strong>
+                    </div>
+                }
 
 
             </div>
-
-
-
-
-
-            <p className="finding-description">
-
-                {finding.description}
-
-            </p>
-
-
 
 
 
@@ -83,53 +85,21 @@ function FindingCard({ finding }) {
 
                 <details className="evidence-box">
 
-
                     <summary>
-
-                        View Evidence
-
+                        View Technical Evidence
                     </summary>
 
 
-
                     <pre>
-
                         {finding.evidence}
-
                     </pre>
 
 
                 </details>
-
             }
 
 
-
-
-            {
-                finding.recommendation &&
-
-                <div className="recommendation">
-
-
-                    <strong>
-                        Recommendation
-                    </strong>
-
-
-                    <p>
-                        {finding.recommendation}
-                    </p>
-
-
-                </div>
-
-            }
-
-
-
-
-        </div>
+        </article>
 
     );
 

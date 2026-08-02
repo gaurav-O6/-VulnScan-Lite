@@ -1,8 +1,7 @@
-function SecurityScore({ score, grade }) {
+       function SecurityScore({ score, grade }) {
 
 
     function getRiskLabel(score) {
-
 
         if (score >= 90) {
 
@@ -20,7 +19,7 @@ function SecurityScore({ score, grade }) {
 
         if (score >= 50) {
 
-            return "Needs Improvement";
+            return "Moderate Risk";
 
         }
 
@@ -32,18 +31,16 @@ function SecurityScore({ score, grade }) {
 
 
 
-
     function getScoreClass(score) {
 
-
-        if (score >= 90) {
+        if (score >= 75) {
 
             return "score-good";
 
         }
 
 
-        if (score >= 75) {
+        if (score >= 50) {
 
             return "score-medium";
 
@@ -57,23 +54,18 @@ function SecurityScore({ score, grade }) {
 
 
 
-
     return (
 
-        <div className="security-score-card">
-
+        <section className="security-score-card">
 
 
             <div
-                className={
-                    `score-circle ${getScoreClass(score)}`
-                }
+                className={`score-circle ${getScoreClass(score)}`}
             >
-
 
                 <span className="score-number">
 
-                    {score}
+                    {score ?? 0}
 
                 </span>
 
@@ -94,32 +86,82 @@ function SecurityScore({ score, grade }) {
             <div className="score-details">
 
 
+                <span className="score-title">
+
+                    Security Rating
+
+                </span>
+
+
                 <h2>
-                    Security Score
+
+                    {getRiskLabel(score)}
+
                 </h2>
 
 
-
                 <p>
-                    {getRiskLabel(score)}
+
+                    Overall security posture based on detected
+                    vulnerabilities and configuration checks.
+
                 </p>
 
 
 
 
-                <div className="grade-badge">
 
-                    Grade {grade}
+                <div className="score-stats">
+
+
+                    <div>
+
+                        <span>
+
+                            Grade
+
+                        </span>
+
+
+                        <strong>
+
+                            {grade || "N/A"}
+
+                        </strong>
+
+
+                    </div>
+
+
+
+
+
+                    <div>
+
+                        <span>
+
+                            Assessment
+
+                        </span>
+
+
+                        <strong>
+
+                            Completed
+
+                        </strong>
+
+
+                    </div>
+
 
                 </div>
-
 
 
             </div>
 
 
-
-        </div>
+        </section>
 
     );
 

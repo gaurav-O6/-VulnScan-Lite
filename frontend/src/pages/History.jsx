@@ -1,97 +1,50 @@
 import { useEffect, useState } from "react";
-
 import api from "../api/client";
-
 
 function History({ onSelectScan }) {
 
-
     const [scans, setScans] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
-
-
-
 
     useEffect(() => {
 
-
         async function loadScans() {
-
 
             try {
 
-
-                const response = await api.get(
-                    "/scans"
-                );
-
+                const response = await api.get("/scans");
 
                 setScans(response.data);
 
-
-
             } catch (error) {
 
-
-                console.error(
-                    "Failed loading scans:",
-                    error
-                );
-
+                console.error("Failed loading scans:", error);
 
             } finally {
 
-
                 setLoading(false);
-
 
             }
 
-
         }
-
-
-
 
         loadScans();
 
-
-
     }, []);
-
-
-
-
-
-
 
     function formatDate(date) {
 
-
         if (!date) {
 
-            return "Unknown date";
+            return "Unknown";
 
         }
 
-
         return new Date(date).toLocaleString();
-
-
 
     }
 
-
-
-
-
-
-
-
     function getStatusClass(status) {
-
 
         if (status === "completed") {
 
@@ -99,29 +52,17 @@ function History({ onSelectScan }) {
 
         }
 
-
         if (status === "failed") {
 
             return "status-failed";
 
         }
 
-
         return "status-running";
-
 
     }
 
-
-
-
-
-
-
-
-
     function getGradeClass(grade) {
-
 
         if (!grade) {
 
@@ -129,105 +70,76 @@ function History({ onSelectScan }) {
 
         }
 
-
         return `grade-${grade.toLowerCase()}`;
-
 
     }
 
-
-
-
-
-
-
-
     if (loading) {
-
 
         return (
 
-            <div className="report-card">
+            <div className="history-empty">
 
-                Loading scan history...
+                Loading previous assessments...
 
             </div>
 
         );
 
-
     }
-
-
-
-
-
-
-
-
 
     return (
 
+        <section className="history-container">
 
-        <div className="history-container">
+            <div className="section-header">
 
+                <div>
 
-            <h2>
-                Recent Security Assessments
-            </h2>
+                    <h2>
 
+                        Assessment History
 
+                    </h2>
 
+                    <p>
 
+                        Previously completed website security assessments.
 
-
-            {
-                scans.length === 0 &&
-
-
-                <div className="report-card">
-
-                    No previous scans found.
+                    </p>
 
                 </div>
 
+            </div>
+
+            {
+
+                scans.length === 0 &&
+
+                <div className="history-empty">
+
+                    No previous scans available.
+
+                </div>
 
             }
-
-
-
-
-
-
-
 
             {
 
                 scans.map((scan) => (
 
-
-
-                    <div
-
+                    <article
                         className="history-card"
-
                         key={scan.id}
-
                     >
-
-
-
-
 
                         <div className="history-main">
 
-
-
                             <h3>
+
                                 {scan.target_url}
+
                             </h3>
-
-
 
                             <p className="history-date">
 
@@ -235,128 +147,75 @@ function History({ onSelectScan }) {
 
                             </p>
 
-
-
-
                             <span
-
-                                className={
-                                    `history-status ${
-                                        getStatusClass(scan.status)
-                                    }`
-                                }
-
+                                className={`history-status ${getStatusClass(scan.status)}`}
                             >
 
                                 {scan.status}
 
                             </span>
 
-
-
-
                         </div>
-
-
-
-
-
-
-
 
                         <div className="history-metrics">
 
-
-
                             <div>
 
                                 <span>
-                                    Score
-                                </span>
 
+                                    Score
+
+                                </span>
 
                                 <strong>
-                                    {
-                                        scan.score ?? "--"
-                                    }
+
+                                    {scan.score ?? "--"}
+
                                 </strong>
 
-
                             </div>
-
-
-
-
 
                             <div>
 
                                 <span>
+
                                     Grade
+
                                 </span>
 
-
                                 <strong
-
                                     className={
-                                        getGradeClass(
-                                            scan.grade
-                                        )
+                                        getGradeClass(scan.grade)
                                     }
-
                                 >
 
-                                    {
-                                        scan.grade ?? "--"
-                                    }
+                                    {scan.grade ?? "--"}
 
                                 </strong>
 
-
                             </div>
 
-
-
                             <button
-
                                 className="view-report-button"
-
                                 onClick={() => onSelectScan(scan.id)}
-
                             >
 
                                 View Report
 
                             </button>
 
-
-
-
                         </div>
 
-
-
-
-
-
-                    </div>
-
-
+                    </article>
 
                 ))
 
             }
 
-
-
-
-
-        </div>
-
+        </section>
 
     );
 
 }
-
-
 
 export default History;

@@ -1,195 +1,192 @@
 function FindingsSummary({ findings }) {
 
-
     const total = findings.length;
 
-
     const passed = findings.filter(
-
-        item => item.status === "passed"
-
+        finding => finding.status === "passed"
     ).length;
-
-
 
     const failed = findings.filter(
-
-        item => item.status === "failed"
-
+        finding => finding.status === "failed"
     ).length;
 
 
-
-
-    const severityCount = {
-
+    const severity = {
 
         High: 0,
-
         Medium: 0,
-
         Low: 0,
-
         Informational: 0
 
     };
 
 
-
-
-
     findings.forEach((finding) => {
 
+        if (severity[finding.severity] !== undefined) {
 
-        if (severityCount[finding.severity] !== undefined) {
-
-            severityCount[finding.severity]++;
+            severity[finding.severity]++;
 
         }
-
 
     });
 
 
-
+    const risk =
+        failed === 0
+            ? "Low"
+            : failed <= 3
+                ? "Moderate"
+                : "High";
 
 
     return (
 
-        <div className="summary-section">
+        <section className="summary-section">
 
 
-            <h2>
-                Assessment Summary
-            </h2>
+            <div className="section-header">
 
+                <div>
+
+                    <h2>
+                        Assessment Summary
+                    </h2>
+
+                    <p>
+                        Overall results from the passive security assessment.
+                    </p>
+
+                </div>
+
+            </div>
 
 
 
             <div className="summary-grid">
 
 
-
                 <div className="summary-card">
-
 
                     <span>
                         Total Findings
                     </span>
 
-
                     <strong>
                         {total}
                     </strong>
 
-
                 </div>
-
-
 
 
 
                 <div className="summary-card success">
 
-
                     <span>
                         Passed
                     </span>
-
 
                     <strong>
                         {passed}
                     </strong>
 
-
                 </div>
-
-
 
 
 
                 <div className="summary-card danger">
 
-
                     <span>
                         Failed
                     </span>
-
 
                     <strong>
                         {failed}
                     </strong>
 
-
                 </div>
-
-
 
 
 
                 <div className="summary-card">
 
-
                     <span>
                         Risk Level
                     </span>
 
-
                     <strong>
-
-                        {
-                            failed === 0
-
-                            ? "Low"
-
-                            : failed <= 3
-
-                            ? "Moderate"
-
-                            : "High"
-
-                        }
-
+                        {risk}
                     </strong>
-
 
                 </div>
 
 
-
             </div>
-
 
 
 
             <div className="severity-breakdown">
 
 
-                <span>
-                    High: {severityCount.High}
-                </span>
+                <div className="severity-pill high">
+
+                    <span>
+                        High
+                    </span>
+
+                    <strong>
+                        {severity.High}
+                    </strong>
+
+                </div>
 
 
-                <span>
-                    Medium: {severityCount.Medium}
-                </span>
+
+                <div className="severity-pill medium">
+
+                    <span>
+                        Medium
+                    </span>
+
+                    <strong>
+                        {severity.Medium}
+                    </strong>
+
+                </div>
 
 
-                <span>
-                    Low: {severityCount.Low}
-                </span>
+
+                <div className="severity-pill low">
+
+                    <span>
+                        Low
+                    </span>
+
+                    <strong>
+                        {severity.Low}
+                    </strong>
+
+                </div>
 
 
-                <span>
-                    Info: {severityCount.Informational}
-                </span>
+
+                <div className="severity-pill informational">
+
+                    <span>
+                        Info
+                    </span>
+
+                    <strong>
+                        {severity.Informational}
+                    </strong>
+
+                </div>
 
 
             </div>
 
 
-
-        </div>
+        </section>
 
     );
 
