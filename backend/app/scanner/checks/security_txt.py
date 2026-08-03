@@ -1,4 +1,4 @@
-import requests
+from app.scanner.http_client import HTTPClient
 
 
 class SecurityTxtChecker:
@@ -15,12 +15,32 @@ class SecurityTxtChecker:
         )
 
 
+        http_client: HTTPClient = context["http_client"]
+
+
         try:
 
-            response = requests.get(
-                url,
-                timeout=5,
-            )
+            result = http_client.get(url)
+
+
+            if not result["success"]:
+
+                return {
+                    "findings": [
+                        {
+                            "name": "Security.txt",
+                            "severity": "Informational",
+                            "status": "unknown",
+                            "description": (
+                                "Unable to check security.txt."
+                            ),
+                            "value": None,
+                        }
+                    ]
+                }
+
+
+            response = result["response"]
 
 
             exists = response.status_code == 200
@@ -41,7 +61,11 @@ class SecurityTxtChecker:
                             if exists
                             else "security.txt file missing."
                         ),
-                        "value": url if exists else None,
+                        "value": (
+                            url
+                            if exists
+                            else None
+                        ),
                     }
                 ]
             }

@@ -92,6 +92,8 @@ class ScoringEngine:
             "Informational": 0,
         }
 
+        passed_checks = []
+
         failed_checks = []
 
         statistics = {
@@ -114,11 +116,19 @@ class ScoringEngine:
             )
 
             if status == "passed":
+
                 statistics["passed_checks"] += 1
+
+                passed_checks.append(
+                    finding
+                )
+
                 continue
 
             if status == "unknown":
+
                 statistics["unknown_checks"] += 1
+
                 continue
 
             if status != "failed":
@@ -149,6 +159,7 @@ class ScoringEngine:
             "score": score,
             "grade": self._grade(score),
             "summary": summary,
+            "passed_checks": passed_checks,
             "failed_checks": failed_checks,
             "statistics": statistics,
         }

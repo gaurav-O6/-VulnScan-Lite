@@ -1,10 +1,11 @@
-import requests
+from app.scanner.http_client import HTTPClient
 
 
 class SensitiveFileChecker:
     """
     Checks for exposed sensitive files.
     """
+
 
     SENSITIVE_PATHS = [
         "/.env",
@@ -23,6 +24,8 @@ class SensitiveFileChecker:
 
         base_url = context["url"]
 
+        http_client: HTTPClient = context["http_client"]
+
         findings = []
 
 
@@ -30,45 +33,11 @@ class SensitiveFileChecker:
 
             url = base_url.rstrip("/") + path
 
-            try:
 
-                response = requests.get(
-                    url,
-                    timeout=5,
-                    allow_redirects=False,
-                )
+            result = http_client.get(url)
 
 
-                exposed = (
-                    response.status_code == 200
-                    and len(response.text) > 0
-                )
-
-
-                findings.append(
-                    {
-                        "name": f"Sensitive File Exposure: {path}",
-                        "severity": "High",
-                        "status": (
-                            "failed"
-                            if exposed
-                            else "passed"
-                        ),
-                        "description": (
-                            "Sensitive file is publicly accessible."
-                            if exposed
-                            else "Sensitive file is not exposed."
-                        ),
-                        "value": (
-                            url
-                            if exposed
-                            else None
-                        ),
-                    }
-                )
-
-
-            except Exception:
+            if not result["success"]:
 
                 findings.append(
                     {
@@ -81,6 +50,41 @@ class SensitiveFileChecker:
                         "value": None,
                     }
                 )
+
+                continue
+
+
+
+            response = result["response"]
+
+
+            exposed = (
+                response.status_code == 200
+                and len(response.text.strip()) > 0
+            )
+
+
+            findings.append(
+                {
+                    "name": f"Sensitive File Exposure: {path}",
+                    "severity": "High",
+                    "status": (
+                        "failed"
+                        if exposed
+                        else "passed"
+                    ),
+                    "description": (
+                        "Sensitive file is publicly accessible."
+                        if exposed
+                        else "Sensitive file is not exposed."
+                    ),
+                    "value": (
+                        url
+                        if exposed
+                        else None
+                    ),
+                }
+            )
 
 
         return {

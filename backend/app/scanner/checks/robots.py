@@ -1,4 +1,4 @@
-import requests
+from app.scanner.http_client import HTTPClient
 
 
 class RobotsChecker:
@@ -25,15 +25,36 @@ class RobotsChecker:
         )
 
 
+        http_client: HTTPClient = context["http_client"]
+
         findings = []
 
 
         try:
 
-            response = requests.get(
-                url,
-                timeout=5,
-            )
+            result = http_client.get(url)
+
+
+            if not result["success"]:
+
+                findings.append(
+                    {
+                        "name": "Robots.txt Check",
+                        "severity": "Low",
+                        "status": "unknown",
+                        "description": (
+                            "Unable to check robots.txt."
+                        ),
+                        "value": None,
+                    }
+                )
+
+                return {
+                    "findings": findings
+                }
+
+
+            response = result["response"]
 
 
             if response.status_code != 200:
@@ -61,6 +82,7 @@ class RobotsChecker:
             for word in self.SUSPICIOUS_WORDS:
 
                 if word in lines:
+
                     exposed.append(word)
 
 

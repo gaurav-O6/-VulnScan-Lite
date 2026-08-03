@@ -101,6 +101,10 @@ class Scanner:
             "url": target,
             "response": response,
             "elapsed_ms": response_result["elapsed_ms"],
+
+            # Required by checks that perform
+            # additional HTTP requests.
+            "http_client": self.http_client,
         }
 
 

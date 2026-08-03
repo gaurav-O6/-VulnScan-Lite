@@ -1,12 +1,30 @@
+from io import BytesIO
 from datetime import datetime
+import logging
 
-from flask import Blueprint, jsonify, request
+from flask import (
+    Blueprint,
+    jsonify,
+    request,
+    send_file,
+)
 
 from app.extensions import db
 from app.models import Scan
 
 from app.queue import scan_queue
 from app.workers.scan_worker import process_scan
+
+from app.scanner.validator import URLValidator
+from app.scanner.pdf_report_builder import PDFReportBuilder
+
+
+logger = logging.getLogger(__name__)
+
+
+validator = URLValidator()
+
+pdf_builder = PDFReportBuilder()
 
 
 scans_bp = Blueprint(
@@ -33,7 +51,6 @@ def get_risk_level(score: int) -> str:
     return "Critical"
 
 
-
 def calculate_duration(scan: Scan):
     """
     Calculate scan execution duration.
@@ -57,8 +74,10 @@ def calculate_duration(scan: Scan):
     return None
 
 
-
-@scans_bp.route("", methods=["POST"])
+@scans_bp.route(
+    "",
+    methods=["POST"],
+)
 def create_scan():
     """
     Queue a vulnerability scan.
@@ -79,9 +98,9 @@ def create_scan():
             400,
         )
 
-
-    url = data.get("url")
-
+    url = data.get(
+        "url"
+    )
 
     if not url:
 
@@ -94,37 +113,79 @@ def create_scan():
             400,
         )
 
+    validation = validator.validate(
+        url
+    )
+
+    if not validation["valid"]:
+
+        return (
+            jsonify(
+                {
+                    "error": validation["error"]
+                }
+            ),
+            400,
+        )
+
+    normalized_url = validation["normalized_url"]
 
     scan = Scan(
-        target_url=url,
+        target_url=normalized_url,
         status="queued",
+        progress=0,
+        current_stage="Queued",
         started_at=None,
         completed_at=None,
     )
 
+    try:
 
-    db.session.add(scan)
+        db.session.add(
+            scan
+        )
 
-    db.session.commit()
+        db.session.commit()
 
+        scan_queue.enqueue(
+            process_scan,
+            scan.id,
+        )
 
+    except Exception:
 
-    scan_queue.enqueue(
-        process_scan,
+        db.session.rollback()
+
+        logger.exception(
+            "Failed to create scan."
+        )
+
+        return (
+            jsonify(
+                {
+                    "error": "Unable to start scan."
+                }
+            ),
+            500,
+        )
+
+    logger.info(
+        "Scan %s queued for %s",
         scan.id,
+        normalized_url,
     )
-
 
     return (
         jsonify(
             {
                 "scan_id": scan.id,
                 "status": scan.status,
+                "progress": scan.progress,
+                "current_stage": scan.current_stage,
             }
         ),
         201,
     )
-
 
 
 @scans_bp.route(
@@ -133,15 +194,13 @@ def create_scan():
 )
 def get_scan(scan_id: int):
     """
-    Retrieve scan result.
+    Retrieve scan result and progress.
     """
-
 
     scan = db.session.get(
         Scan,
         scan_id,
     )
-
 
     if scan is None:
 
@@ -154,41 +213,32 @@ def get_scan(scan_id: int):
             404,
         )
 
-
     return jsonify(
         {
             "id": scan.id,
-
             "target_url": scan.target_url,
-
             "status": scan.status,
-
+            "progress": scan.progress,
+            "current_stage": scan.current_stage,
             "score": scan.score,
-
             "grade": scan.grade,
-
             "risk_level": get_risk_level(
                 scan.score
             ),
-
             "duration_seconds": calculate_duration(
                 scan
             ),
-
             "report": scan.report_json,
-
             "created_at": (
                 scan.created_at.isoformat()
                 if scan.created_at
                 else None
             ),
-
             "started_at": (
                 scan.started_at.isoformat()
                 if scan.started_at
                 else None
             ),
-
             "completed_at": (
                 scan.completed_at.isoformat()
                 if scan.completed_at
@@ -196,8 +246,6 @@ def get_scan(scan_id: int):
             ),
         }
     )
-
-
 
 @scans_bp.route(
     "",
@@ -208,7 +256,6 @@ def get_scan_history():
     Retrieve scan history.
     """
 
-
     scans = (
         Scan.query
         .order_by(
@@ -217,15 +264,11 @@ def get_scan_history():
         .all()
     )
 
-
     history = []
-
 
     for scan in scans:
 
-
         findings_count = 0
-
 
         if isinstance(
             scan.report_json,
@@ -237,7 +280,6 @@ def get_scan_history():
                 [],
             )
 
-
             if isinstance(
                 findings,
                 list,
@@ -247,8 +289,6 @@ def get_scan_history():
                     findings
                 )
 
-
-
         history.append(
             {
                 "id": scan.id,
@@ -256,6 +296,10 @@ def get_scan_history():
                 "target_url": scan.target_url,
 
                 "status": scan.status,
+
+                "progress": scan.progress,
+
+                "current_stage": scan.current_stage,
 
                 "score": scan.score,
 
@@ -285,20 +329,20 @@ def get_scan_history():
             }
         )
 
-
-    return jsonify(history)
+    return jsonify(
+        history
+    )
 
 
 
 @scans_bp.route(
-    "/<int:scan_id>",
-    methods=["DELETE"],
+    "/<int:scan_id>/report/pdf",
+    methods=["GET"],
 )
-def delete_scan(scan_id: int):
+def download_pdf_report(scan_id: int):
     """
-    Delete scan history entry.
+    Generate and download PDF report.
     """
-
 
     scan = db.session.get(
         Scan,
@@ -318,16 +362,54 @@ def delete_scan(scan_id: int):
         )
 
 
-    db.session.delete(
-        scan
+
+    if not scan.report_json:
+
+        return (
+            jsonify(
+                {
+                    "error": "Report not available."
+                }
+            ),
+            404,
+        )
+
+
+
+    try:
+
+        pdf = pdf_builder.build(
+            scan
+        )
+
+
+    except Exception:
+
+        logger.exception(
+            "Failed to generate PDF report."
+        )
+
+
+        return (
+            jsonify(
+                {
+                    "error": "Unable to generate PDF report."
+                }
+            ),
+            500,
+        )
+
+
+
+    filename = (
+        f"vulnscan-report-{scan.id}.pdf"
     )
 
-    db.session.commit()
 
 
-    return jsonify(
-        {
-            "message": "Scan deleted successfully.",
-            "scan_id": scan_id,
-        }
+    return send_file(
+        BytesIO(pdf),
+        mimetype="application/pdf",
+        as_attachment=True,
+        download_name=filename,
     )

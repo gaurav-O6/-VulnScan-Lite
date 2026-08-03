@@ -1,8 +1,29 @@
 from datetime import datetime
+import logging
+
 
 from app.extensions import db
 from app.models import Scan
 from app.scanner.scanner import Scanner
+
+
+logger = logging.getLogger(__name__)
+
+
+def update_progress(
+    scan,
+    progress,
+    stage,
+):
+    """
+    Update scan progress safely.
+    """
+
+    scan.progress = progress
+    scan.current_stage = stage
+
+    db.session.commit()
+
 
 
 def process_scan(scan_id):
@@ -15,41 +36,72 @@ def process_scan(scan_id):
 
     from app import create_app
 
+
     app = create_app()
 
     scanner = None
 
+
     with app.app_context():
+
 
         scan = db.session.get(
             Scan,
             scan_id,
         )
 
+
         if scan is None:
 
-            print(
-                f"[WORKER] Scan {scan_id} not found."
+            logger.warning(
+                "Scan %s not found.",
+                scan_id,
             )
 
             return
 
 
+
         try:
+
 
             scanner = Scanner()
 
 
-            print(
-                f"[WORKER] Starting scan {scan_id}"
+            logger.info(
+                "Starting scan %s",
+                scan_id,
             )
+
 
 
             scan.status = "running"
 
             scan.started_at = datetime.utcnow()
 
-            db.session.commit()
+
+
+            update_progress(
+                scan,
+                5,
+                "Initializing scanner",
+            )
+
+
+
+            update_progress(
+                scan,
+                15,
+                "Validating target URL",
+            )
+
+
+
+            update_progress(
+                scan,
+                30,
+                "Running security checks",
+            )
 
 
 
@@ -59,29 +111,57 @@ def process_scan(scan_id):
 
 
 
+            update_progress(
+                scan,
+                85,
+                "Analyzing findings",
+            )
+
+
+
             if not result["success"]:
 
 
-                print(
-                    f"[WORKER] Scan {scan_id} failed: "
-                    f"{result['error']}"
+                logger.warning(
+                    "Scan %s failed: %s",
+                    scan_id,
+                    result["error"],
                 )
 
 
+
                 scan.status = "failed"
+
+
 
                 scan.report_json = {
                     "error": result["error"],
                     "target": scan.target_url,
                 }
 
+
+
                 scan.completed_at = datetime.utcnow()
 
 
-                db.session.commit()
+
+                update_progress(
+                    scan,
+                    100,
+                    "Scan failed",
+                )
+
 
 
                 return
+
+
+
+            update_progress(
+                scan,
+                95,
+                "Building final report",
+            )
 
 
 
@@ -92,11 +172,12 @@ def process_scan(scan_id):
             scan.report_json = report
 
 
+
             scan.score = (
                 report
                 .get(
                     "security_score",
-                    {}
+                    {},
                 )
                 .get(
                     "score",
@@ -105,11 +186,12 @@ def process_scan(scan_id):
             )
 
 
+
             scan.grade = (
                 report
                 .get(
                     "security_score",
-                    {}
+                    {},
                 )
                 .get(
                     "grade",
@@ -118,44 +200,63 @@ def process_scan(scan_id):
             )
 
 
+
             scan.status = "completed"
+
+
 
             scan.completed_at = datetime.utcnow()
 
 
-            db.session.commit()
 
-
-
-            print(
-                f"[WORKER] Scan {scan_id} completed "
-                f"Score={scan.score} "
-                f"Grade={scan.grade}"
+            update_progress(
+                scan,
+                100,
+                "Completed",
             )
 
 
 
-        except Exception as e:
-
-
-            print(
-                f"[WORKER ERROR] Scan {scan_id} failed: {e}"
+            logger.info(
+                "Scan %s completed. Score=%s Grade=%s",
+                scan_id,
+                scan.score,
+                scan.grade,
             )
+
+
+
+        except Exception:
+
+
+            logger.exception(
+                "Scan %s failed unexpectedly.",
+                scan_id,
+            )
+
 
 
             scan.status = "failed"
 
 
+
             scan.report_json = {
-                "error": str(e),
+                "error": "Internal scan processing error.",
                 "target": scan.target_url,
             }
+
 
 
             scan.completed_at = datetime.utcnow()
 
 
-            db.session.commit()
+
+            update_progress(
+                scan,
+                100,
+                "Failed",
+            )
+
 
 
             raise
