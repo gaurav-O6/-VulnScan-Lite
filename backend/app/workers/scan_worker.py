@@ -13,13 +13,11 @@ def process_scan(scan_id):
     and updates scan status/results in database.
     """
 
-
-    # Import here to avoid circular import
     from app import create_app
-
 
     app = create_app()
 
+    scanner = None
 
     with app.app_context():
 
@@ -27,7 +25,6 @@ def process_scan(scan_id):
             Scan,
             scan_id,
         )
-
 
         if scan is None:
 
@@ -38,11 +35,10 @@ def process_scan(scan_id):
             return
 
 
-
-        scanner = Scanner()
-
-
         try:
+
+            scanner = Scanner()
+
 
             print(
                 f"[WORKER] Starting scan {scan_id}"
@@ -65,6 +61,7 @@ def process_scan(scan_id):
 
             if not result["success"]:
 
+
                 print(
                     f"[WORKER] Scan {scan_id} failed: "
                     f"{result['error']}"
@@ -73,7 +70,13 @@ def process_scan(scan_id):
 
                 scan.status = "failed"
 
+                scan.report_json = {
+                    "error": result["error"],
+                    "target": scan.target_url,
+                }
+
                 scan.completed_at = datetime.utcnow()
+
 
                 db.session.commit()
 
@@ -85,16 +88,33 @@ def process_scan(scan_id):
             report = result["report"]
 
 
+
             scan.report_json = report
 
 
             scan.score = (
-                report["security_score"]["score"]
+                report
+                .get(
+                    "security_score",
+                    {}
+                )
+                .get(
+                    "score",
+                    0,
+                )
             )
 
 
             scan.grade = (
-                report["security_score"]["grade"]
+                report
+                .get(
+                    "security_score",
+                    {}
+                )
+                .get(
+                    "grade",
+                    "F",
+                )
             )
 
 
@@ -108,8 +128,9 @@ def process_scan(scan_id):
 
 
             print(
-                f"[WORKER] Scan {scan_id} completed successfully "
-                f"Score={scan.score} Grade={scan.grade}"
+                f"[WORKER] Scan {scan_id} completed "
+                f"Score={scan.score} "
+                f"Grade={scan.grade}"
             )
 
 
@@ -124,6 +145,13 @@ def process_scan(scan_id):
 
             scan.status = "failed"
 
+
+            scan.report_json = {
+                "error": str(e),
+                "target": scan.target_url,
+            }
+
+
             scan.completed_at = datetime.utcnow()
 
 
@@ -136,4 +164,7 @@ def process_scan(scan_id):
 
         finally:
 
-            scanner.close()
+
+            if scanner:
+
+                scanner.close()
