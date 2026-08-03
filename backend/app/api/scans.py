@@ -24,7 +24,6 @@ def create_scan():
 
     data = request.get_json(silent=True)
 
-
     if data is None:
 
         return (
@@ -36,9 +35,7 @@ def create_scan():
             400,
         )
 
-
     url = data.get("url")
-
 
     if not url:
 
@@ -51,7 +48,6 @@ def create_scan():
             400,
         )
 
-
     scan = Scan(
         target_url=url,
         status="queued",
@@ -59,18 +55,13 @@ def create_scan():
         completed_at=None,
     )
 
-
     db.session.add(scan)
-
     db.session.commit()
-
-
 
     scan_queue.enqueue(
         process_scan,
         scan.id,
     )
-
 
     return (
         jsonify(
@@ -83,19 +74,16 @@ def create_scan():
     )
 
 
-
 @scans_bp.route("/<int:scan_id>", methods=["GET"])
 def get_scan(scan_id: int):
     """
     Retrieve scan result.
     """
 
-
     scan = db.session.get(
         Scan,
         scan_id,
     )
-
 
     if scan is None:
 
@@ -108,7 +96,6 @@ def get_scan(scan_id: int):
             404,
         )
 
-
     return jsonify(
         {
             "id": scan.id,
@@ -117,19 +104,16 @@ def get_scan(scan_id: int):
             "score": scan.score,
             "grade": scan.grade,
             "report": scan.report_json,
-
             "created_at": (
                 scan.created_at.isoformat()
                 if scan.created_at
                 else None
             ),
-
             "started_at": (
                 scan.started_at.isoformat()
                 if scan.started_at
                 else None
             ),
-
             "completed_at": (
                 scan.completed_at.isoformat()
                 if scan.completed_at
@@ -139,13 +123,11 @@ def get_scan(scan_id: int):
     )
 
 
-
 @scans_bp.route("", methods=["GET"])
 def get_scan_history():
     """
     Retrieve scan history.
     """
-
 
     scans = (
         Scan.query
@@ -155,11 +137,23 @@ def get_scan_history():
         .all()
     )
 
-
     history = []
 
-
     for scan in scans:
+
+        findings_count = 0
+
+        if (
+            isinstance(scan.report_json, dict)
+        ):
+
+            findings = scan.report_json.get(
+                "findings",
+                [],
+            )
+
+            if isinstance(findings, list):
+                findings_count = len(findings)
 
         history.append(
             {
@@ -168,13 +162,12 @@ def get_scan_history():
                 "status": scan.status,
                 "score": scan.score,
                 "grade": scan.grade,
-
+                "findings_count": findings_count,
                 "created_at": (
                     scan.created_at.isoformat()
                     if scan.created_at
                     else None
                 ),
-
                 "completed_at": (
                     scan.completed_at.isoformat()
                     if scan.completed_at
@@ -182,6 +175,5 @@ def get_scan_history():
                 ),
             }
         )
-
 
     return jsonify(history)

@@ -26,6 +26,16 @@ class ReportBuilder:
         Create final scan report.
         """
 
+        statistics = score.get(
+            "statistics",
+            {},
+        )
+
+        severity_summary = score.get(
+            "summary",
+            {},
+        )
+
         return {
 
             "metadata": {
@@ -34,40 +44,79 @@ class ReportBuilder:
                 "generated_at": datetime.utcnow().isoformat(),
             },
 
-
             "target": {
                 "url": target,
             },
 
-
             "security_score": {
-
                 "score": score.get(
                     "score",
                     0,
                 ),
-
                 "grade": score.get(
                     "grade",
                     "F",
                 ),
+                "summary": severity_summary,
+            },
 
-                "summary": score.get(
-                    "summary",
-                    {},
+            #
+            # New Day 7 report sections
+            #
+
+            "scan_summary": {
+                "total_checks": statistics.get(
+                    "total_checks",
+                    0,
+                ),
+                "passed_checks": statistics.get(
+                    "passed_checks",
+                    0,
+                ),
+                "failed_checks": statistics.get(
+                    "failed_checks",
+                    0,
+                ),
+                "unknown_checks": statistics.get(
+                    "unknown_checks",
+                    0,
                 ),
             },
 
+            "risk_overview": {
+                "critical": severity_summary.get(
+                    "Critical",
+                    0,
+                ),
+                "high": severity_summary.get(
+                    "High",
+                    0,
+                ),
+                "medium": severity_summary.get(
+                    "Medium",
+                    0,
+                ),
+                "low": severity_summary.get(
+                    "Low",
+                    0,
+                ),
+                "informational": severity_summary.get(
+                    "Informational",
+                    0,
+                ),
+            },
+
+            #
+            # Existing summary retained
+            #
 
             "summary": self._build_summary(
-                score
+                severity_summary
             ),
-
 
             "recommendations": self._build_recommendations(
                 score
             ),
-
 
             "technical_details": {
 
@@ -94,9 +143,9 @@ class ReportBuilder:
                 "security_txt": security_txt,
             },
 
-
+            #
             # Backwards compatibility
-            # Keep existing frontend/API consumers working
+            #
 
             "response_info": response_info,
 
@@ -121,25 +170,23 @@ class ReportBuilder:
             "security_txt": security_txt,
         }
 
-
     def _build_summary(
         self,
-        score: dict,
+        severity_summary: dict,
     ) -> dict:
         """
         Build vulnerability summary.
         """
 
-        severity_summary = score.get(
-            "summary",
-            {},
-        )
-
-
         return {
 
             "total_findings": sum(
                 severity_summary.values()
+            ),
+
+            "critical": severity_summary.get(
+                "Critical",
+                0,
             ),
 
             "high": severity_summary.get(
@@ -163,17 +210,15 @@ class ReportBuilder:
             ),
         }
 
-
     def _build_recommendations(
         self,
         score: dict,
     ) -> list:
         """
-        Extract remediation recommendations.
+        Extract unique remediation recommendations.
         """
 
         recommendations = []
-
 
         for finding in score.get(
             "failed_checks",
@@ -184,13 +229,14 @@ class ReportBuilder:
                 "recommendation"
             )
 
-
             if recommendation:
-
                 recommendations.append(
                     recommendation
                 )
 
+        #
+        # Preserve insertion order while removing duplicates.
+        #
 
         return list(
             dict.fromkeys(
