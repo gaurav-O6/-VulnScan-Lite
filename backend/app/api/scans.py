@@ -1,5 +1,4 @@
 from io import BytesIO
-from datetime import datetime
 import logging
 
 from flask import (
@@ -9,7 +8,11 @@ from flask import (
     send_file,
 )
 
-from app.extensions import db
+from app.extensions import (
+    db,
+    limiter,
+)
+
 from app.models import Scan
 
 from app.queue import scan_queue
@@ -34,6 +37,7 @@ scans_bp = Blueprint(
 )
 
 
+
 def get_risk_level(score: int) -> str:
     """
     Convert security score into risk category.
@@ -49,6 +53,7 @@ def get_risk_level(score: int) -> str:
         return "High"
 
     return "Critical"
+
 
 
 def calculate_duration(scan: Scan):
@@ -74,9 +79,30 @@ def calculate_duration(scan: Scan):
     return None
 
 
+
+@scans_bp.errorhandler(429)
+def ratelimit_handler(error):
+    """
+    Return API friendly response for rate limit violations.
+    """
+
+    return (
+        jsonify(
+            {
+                "error": "Too many scan requests. Please try again later."
+            }
+        ),
+        429,
+    )
+
+
+
 @scans_bp.route(
     "",
     methods=["POST"],
+)
+@limiter.limit(
+    "10 per minute"
 )
 def create_scan():
     """
@@ -98,9 +124,11 @@ def create_scan():
             400,
         )
 
+
     url = data.get(
         "url"
     )
+
 
     if not url:
 
@@ -113,9 +141,11 @@ def create_scan():
             400,
         )
 
+
     validation = validator.validate(
         url
     )
+
 
     if not validation["valid"]:
 
@@ -128,7 +158,9 @@ def create_scan():
             400,
         )
 
+
     normalized_url = validation["normalized_url"]
+
 
     scan = Scan(
         target_url=normalized_url,
@@ -139,6 +171,7 @@ def create_scan():
         completed_at=None,
     )
 
+
     try:
 
         db.session.add(
@@ -147,10 +180,12 @@ def create_scan():
 
         db.session.commit()
 
+
         scan_queue.enqueue(
             process_scan,
             scan.id,
         )
+
 
     except Exception:
 
@@ -159,6 +194,7 @@ def create_scan():
         logger.exception(
             "Failed to create scan."
         )
+
 
         return (
             jsonify(
@@ -169,11 +205,13 @@ def create_scan():
             500,
         )
 
+
     logger.info(
         "Scan %s queued for %s",
         scan.id,
         normalized_url,
     )
+
 
     return (
         jsonify(
@@ -186,6 +224,7 @@ def create_scan():
         ),
         201,
     )
+
 
 
 @scans_bp.route(
@@ -202,6 +241,7 @@ def get_scan(scan_id: int):
         scan_id,
     )
 
+
     if scan is None:
 
         return (
@@ -212,6 +252,7 @@ def get_scan(scan_id: int):
             ),
             404,
         )
+
 
     return jsonify(
         {
@@ -247,6 +288,8 @@ def get_scan(scan_id: int):
         }
     )
 
+
+
 @scans_bp.route(
     "",
     methods=["GET"],
@@ -264,11 +307,14 @@ def get_scan_history():
         .all()
     )
 
+
     history = []
+
 
     for scan in scans:
 
         findings_count = 0
+
 
         if isinstance(
             scan.report_json,
@@ -280,6 +326,7 @@ def get_scan_history():
                 [],
             )
 
+
             if isinstance(
                 findings,
                 list,
@@ -289,38 +336,28 @@ def get_scan_history():
                     findings
                 )
 
+
         history.append(
             {
                 "id": scan.id,
-
                 "target_url": scan.target_url,
-
                 "status": scan.status,
-
                 "progress": scan.progress,
-
                 "current_stage": scan.current_stage,
-
                 "score": scan.score,
-
                 "grade": scan.grade,
-
                 "risk_level": get_risk_level(
                     scan.score
                 ),
-
                 "findings_count": findings_count,
-
                 "duration_seconds": calculate_duration(
                     scan
                 ),
-
                 "created_at": (
                     scan.created_at.isoformat()
                     if scan.created_at
                     else None
                 ),
-
                 "completed_at": (
                     scan.completed_at.isoformat()
                     if scan.completed_at
@@ -328,6 +365,7 @@ def get_scan_history():
                 ),
             }
         )
+
 
     return jsonify(
         history
@@ -362,7 +400,6 @@ def download_pdf_report(scan_id: int):
         )
 
 
-
     if not scan.report_json:
 
         return (
@@ -373,7 +410,6 @@ def download_pdf_report(scan_id: int):
             ),
             404,
         )
-
 
 
     try:
@@ -400,11 +436,9 @@ def download_pdf_report(scan_id: int):
         )
 
 
-
     filename = (
         f"vulnscan-report-{scan.id}.pdf"
     )
-
 
 
     return send_file(

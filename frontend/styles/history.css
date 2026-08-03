@@ -564,3 +564,160 @@
     position:static !important;
 
 }
+
+/* =========================
+   DELETE BUTTON
+========================= */
+
+
+.delete-report-button {
+
+    height:52px;
+
+    padding:0 24px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        rgba(248,113,113,.15);
+
+    border:
+
+        1px solid rgba(248,113,113,.45);
+
+    color:
+
+        #f87171;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    transition:.25s ease;
+
+}
+
+
+
+.delete-report-button:hover {
+
+    transform:translateY(-3px);
+
+    background:
+
+        rgba(248,113,113,.25);
+
+    border-color:
+
+        #f87171;
+
+}
+
+/* =========================
+   HISTORY ACTION BUTTONS
+========================= */
+
+.view-report-button,
+.delete-report-button {
+
+    transition:.25s ease;
+
+}
+
+
+.view-report-button:hover,
+.delete-report-button:hover {
+
+    transform:translateY(-3px);
+
+}
+
+/* =========================
+   DOWNLOAD PDF BUTTON
+========================= */
+
+
+.download-report-button {
+
+    height:52px;
+
+    padding:0 24px;
+
+    border-radius:12px;
+
+    border:
+        1px solid rgba(56,189,248,.45);
+
+    background:
+        rgba(56,189,248,.12);
+
+    color:
+        #38bdf8;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    font-size:14px;
+
+    letter-spacing:.03em;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    transition:.25s ease;
+
+}
+
+
+
+.download-report-button::before {
+
+    content:"↓";
+
+    font-size:18px;
+
+    font-weight:900;
+
+}
+
+
+
+.download-report-button:hover {
+
+    transform:translateY(-3px);
+
+    background:
+        rgba(56,189,248,.22);
+
+    border-color:
+        #38bdf8;
+
+    box-shadow:
+        0 10px 25px rgba(56,189,248,.18);
+
+}
+
+
+
+
+.download-report-button:disabled {
+
+    cursor:not-allowed;
+
+    opacity:.55;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+

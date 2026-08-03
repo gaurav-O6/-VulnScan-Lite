@@ -1,24 +1,36 @@
+import {
+    RadialBarChart,
+    RadialBar,
+    ResponsiveContainer,
+} from "recharts";
+
+
+
 function SecurityScore({ score, grade }) {
 
 
-    function getRiskLabel(score) {
+    const currentScore = score ?? 0;
 
 
-        if (score >= 90) {
+
+    function getRiskLabel(value) {
+
+
+        if (value >= 90) {
 
             return "Excellent Security Posture";
 
         }
 
 
-        if (score >= 75) {
+        if (value >= 75) {
 
             return "Good Security Posture";
 
         }
 
 
-        if (score >= 50) {
+        if (value >= 50) {
 
             return "Moderate Risk";
 
@@ -34,17 +46,59 @@ function SecurityScore({ score, grade }) {
 
 
 
-    function getScoreClass(score) {
+
+    function getGaugeColor(value) {
 
 
-        if (score >= 75) {
+        if (value >= 90) {
+
+            return "#4ade80";
+
+        }
+
+
+        if (value >= 75) {
+
+            return "#38bdf8";
+
+        }
+
+
+        if (value >= 50) {
+
+            return "#facc15";
+
+        }
+
+
+        return "#f87171";
+
+
+    }
+
+
+
+
+
+
+    function getScoreClass(value) {
+
+
+        if (value >= 90) {
+
+            return "score-excellent";
+
+        }
+
+
+        if (value >= 75) {
 
             return "score-good";
 
         }
 
 
-        if (score >= 50) {
+        if (value >= 50) {
 
             return "score-medium";
 
@@ -60,31 +114,106 @@ function SecurityScore({ score, grade }) {
 
 
 
-    return (
 
+    const gaugeData = [
+
+        {
+            name: "Security Score",
+            value: currentScore,
+            fill: getGaugeColor(currentScore),
+        },
+
+    ];
+
+
+
+
+
+
+    return (
 
         <section className="security-score-card">
 
 
 
-            <div className={`score-circle ${getScoreClass(score)}`}>
 
 
-                <span className="score-number">
-
-                    {score ?? 0}
-
-                </span>
+            <div
+                className={`score-gauge ${getScoreClass(currentScore)}`}
+            >
 
 
-                <span className="score-outof">
+                <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                >
 
-                    /100
 
-                </span>
+                    <RadialBarChart
+
+                        cx="50%"
+
+                        cy="50%"
+
+                        innerRadius="70%"
+
+                        outerRadius="100%"
+
+                        startAngle={90}
+
+                        endAngle={-270}
+
+                        data={gaugeData}
+
+                    >
+
+
+                        <RadialBar
+
+                            dataKey="value"
+
+                            cornerRadius={20}
+
+                            background
+
+                            animationDuration={1200}
+
+                        />
+
+
+                    </RadialBarChart>
+
+
+                </ResponsiveContainer>
+
+
+
+
+
+
+                <div className="gauge-center">
+
+
+                    <span className="score-number">
+
+                        {currentScore}
+
+                    </span>
+
+
+                    <span className="score-outof">
+
+                        /100
+
+                    </span>
+
+
+                </div>
 
 
             </div>
+
+
 
 
 
@@ -104,11 +233,13 @@ function SecurityScore({ score, grade }) {
 
 
 
+
                 <h2>
 
-                    {getRiskLabel(score)}
+                    {getRiskLabel(currentScore)}
 
                 </h2>
+
 
 
 
@@ -119,6 +250,7 @@ function SecurityScore({ score, grade }) {
                     vulnerabilities and configuration checks.
 
                 </p>
+
 
 
 
@@ -147,6 +279,7 @@ function SecurityScore({ score, grade }) {
 
 
                     </div>
+
 
 
 

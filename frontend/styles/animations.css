@@ -3,8 +3,10 @@
 ========================= */
 
 .app {
+
     position:relative;
     overflow:hidden;
+
 }
 
 
@@ -39,6 +41,7 @@
 }
 
 
+
 .app > * {
 
     position:relative;
@@ -63,6 +66,7 @@
         fadeSlide .45s ease;
 
 }
+
 
 
 @keyframes fadeSlide {
@@ -103,12 +107,14 @@
 }
 
 
+
 .dashboard-top-grid {
 
     animation:
         fadeSlide .6s ease;
 
 }
+
 
 
 .dashboard-findings {
@@ -136,6 +142,7 @@ button {
 }
 
 
+
 button:active {
 
     transform:
@@ -146,7 +153,7 @@ button:active {
 
 
 /* =========================
-   SCAN RUNNING ANIMATIONS
+   SCAN RUNNING STATUS
 ========================= */
 
 
@@ -187,6 +194,11 @@ button:active {
 
 }
 
+
+
+/* =========================
+   PULSE DOT
+========================= */
 
 
 .pulse-dot {
@@ -238,14 +250,52 @@ button:active {
 
 
 /* =========================
-   SCAN BEAM
+   SCAN PROCESSING BAR
 ========================= */
+
+
+.scan-animation-bar {
+
+    height:10px;
+
+    width:100%;
+
+    overflow:hidden;
+
+    background:#111827;
+
+    border-radius:999px;
+
+    margin-top:20px;
+
+    position:relative;
+
+}
+
 
 
 .scan-animation-progress {
 
+    height:100%;
+
+    width:40%;
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        var(--blue),
+        transparent
+    );
+
     animation:
-        scanMove 1.8s infinite;
+
+        scanMove 1.8s infinite linear;
 
 }
 
@@ -273,7 +323,28 @@ button:active {
 
 
 
+/* =========================
+   SCAN PROGRESS TEXT
+========================= */
+
+
+.scan-progress-info {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:8px;
+
+    font-size:.9rem;
+
+}
+
+
+
 .scan-progress-message::after {
+
+    content:"";
 
     animation:
         scanBeam 1.8s infinite;

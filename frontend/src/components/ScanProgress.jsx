@@ -1,5 +1,6 @@
 function ScanProgress({ scan }) {
 
+
     if (!scan) {
 
         return (
@@ -7,28 +8,23 @@ function ScanProgress({ scan }) {
             <div className="scan-card scan-empty-state">
 
                 <div className="scan-empty-icon">
-
                     🛡️
-
                 </div>
 
+
                 <h2>
-
                     Ready to Scan
-
                 </h2>
 
-                <p>
 
+                <p>
                     Enter a website URL above to begin a passive security assessment.
                     Your live scan status and results will appear here.
-
                 </p>
 
+
                 <div className="scan-empty-hint">
-
                     No active scan
-
                 </div>
 
             </div>
@@ -38,19 +34,28 @@ function ScanProgress({ scan }) {
     }
 
 
+
+
+
     function getStatusClass(status) {
 
-        if (status === "completed") {
+
+        const value = status?.toLowerCase();
+
+
+        if (value === "completed") {
 
             return "scan-status-completed";
 
         }
 
-        if (status === "failed") {
+
+        if (value === "failed") {
 
             return "scan-status-failed";
 
         }
+
 
         return "scan-status-running";
 
@@ -58,19 +63,37 @@ function ScanProgress({ scan }) {
 
 
 
+
+
+
+
     function getStatusLabel(status) {
 
-        if (status === "completed") {
+
+        const value = status?.toLowerCase();
+
+
+
+        if (value === "completed") {
 
             return "Scan Completed";
 
         }
 
-        if (status === "failed") {
+
+        if (value === "failed") {
 
             return "Scan Failed";
 
         }
+
+
+        if (value === "queued") {
+
+            return "Queued";
+
+        }
+
 
         return "Scanning Website";
 
@@ -78,163 +101,370 @@ function ScanProgress({ scan }) {
 
 
 
+
+
+
+
+
+    function getRiskLabel(score) {
+
+
+        if (
+            score === null ||
+            score === undefined
+        ) {
+
+            return "--";
+
+        }
+
+
+
+        if (score >= 90) {
+
+            return "Low";
+
+        }
+
+
+
+        if (score >= 70) {
+
+            return "Medium";
+
+        }
+
+
+
+        if (score >= 50) {
+
+            return "High";
+
+        }
+
+
+
+        return "Critical";
+
+    }
+
+
+
+
+
+
+    const status =
+        scan.status?.toLowerCase();
+
+
+
+    const progress =
+        scan.progress ?? 0;
+
+
+
+    const currentStage =
+        scan.current_stage ?? "Initializing";
+
+
+
+
+
+    const isScanning = [
+
+        "queued",
+        "running",
+        "processing",
+        "in_progress",
+        "started"
+
+    ].includes(status);
+
+
+
+
+
+
     return (
 
         <div
-            className={`scan-card ${
-                scan.status === "completed"
+
+            className={
+                `scan-card ${
+                    status === "completed"
                     ? "scan-completed"
                     : ""
-            }`}
+                }`
+            }
+
         >
+
+
 
             <div className="scan-card-header">
 
+
                 <div className="scan-title">
+
 
                     <h2>
                         Scan Status
                     </h2>
 
+
                     <p>
                         Live security assessment progress.
                     </p>
 
+
                 </div>
 
+
+
+
+
                 <span
-                    className={`scan-status-badge ${getStatusClass(scan.status)}`}
+
+                    className={
+                        `scan-status-badge ${getStatusClass(status)}`
+                    }
+
                 >
 
-                    {getStatusLabel(scan.status)}
+                    {getStatusLabel(status)}
 
                 </span>
+
 
             </div>
 
 
+
+
+
+
+
             {
-                scan.status === "running" &&
+                isScanning &&
 
-                <div className="scan-animation-bar">
+                <>
 
-                    <div className="scan-animation-progress"></div>
+                    <div className="scan-animation-bar">
 
-                </div>
+                        <div
+                            className="scan-animation-progress"
+                        >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div
+                        className="scan-progress-info"
+                    >
+
+                        <strong>
+                            {currentStage}
+                        </strong>
+
+
+                        <strong>
+                            {progress}%
+                        </strong>
+
+
+                    </div>
+
+
+                </>
 
             }
 
 
+
+
+
+
+
+
             <div className="scan-info-grid">
 
+
+
                 <div className="scan-info-box">
 
                     <span>
-
                         Target
-
                     </span>
 
+
                     <strong>
-
                         {scan.target_url}
-
                     </strong>
 
                 </div>
+
+
+
+
+
 
 
                 <div className="scan-info-box">
 
                     <span>
-
                         Current Status
-
                     </span>
 
+
                     <strong>
-
                         {scan.status}
-
                     </strong>
 
                 </div>
+
+
+
+
+
+
 
 
                 {
-                    scan.status === "completed" &&
+                    status === "completed" &&
 
                     <>
 
                         <div className="scan-info-box">
 
                             <span>
-
                                 Security Score
-
                             </span>
 
+
                             <strong>
-
                                 {scan.score}/100
-
                             </strong>
 
                         </div>
+
+
+
 
 
                         <div className="scan-info-box">
 
                             <span>
-
                                 Grade
-
                             </span>
+
+
+                            <strong>
+                                {scan.grade}
+                            </strong>
+
+                        </div>
+
+
+
+
+
+
+                        <div className="scan-info-box">
+
+                            <span>
+                                Risk Level
+                            </span>
+
+
+                            <strong>
+                                {getRiskLabel(scan.score)}
+                            </strong>
+
+                        </div>
+
+
+
+
+
+
+                        <div className="scan-info-box">
+
+                            <span>
+                                Scan Duration
+                            </span>
+
 
                             <strong>
 
-                                {scan.grade}
+                                {
+                                    scan.duration_seconds !== null &&
+                                    scan.duration_seconds !== undefined
+
+                                    ? `${Number(scan.duration_seconds).toFixed(1)}s`
+
+                                    : "--"
+                                }
 
                             </strong>
 
                         </div>
+
+
+
+
+
+
+                        <div className="scan-info-box">
+
+                            <span>
+                                Findings
+                            </span>
+
+
+                            <strong>
+                                {scan.report?.findings?.length ?? "--"}
+                            </strong>
+
+                        </div>
+
 
                     </>
 
                 }
 
 
-                {
-                    scan.status === "running" &&
 
-                    <div className="scan-progress-message">
 
-                        <span className="pulse-dot"></span>
 
-                        Analyzing security configuration and vulnerabilities...
 
-                    </div>
-
-                }
 
 
                 {
-                    scan.status === "failed" &&
+                    status === "failed" &&
 
                     <div className="scan-error">
 
-                        Scan failed. Please try again.
+                        Scan failed while analyzing target.
+                        Please verify the URL and try again.
 
                     </div>
 
                 }
 
+
+
             </div>
+
+
 
         </div>
 
     );
 
 }
+
 
 export default ScanProgress;

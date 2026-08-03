@@ -52,7 +52,7 @@ function Dashboard({ scan, onNewScan }) {
         const blob = new Blob(
             [reportData],
             {
-                type:"application/json"
+                type: "application/json"
             }
         );
 
@@ -73,31 +73,41 @@ function Dashboard({ scan, onNewScan }) {
 
         URL.revokeObjectURL(url);
 
-
     }
 
 
 
 
 
-    function getRiskClass(score) {
+    function getRiskClass(level) {
 
 
-        if (score >= 90) {
+        if (!level) {
+
+            return "";
+
+        }
+
+
+        const value = level.toLowerCase();
+
+
+
+        if (value === "low") {
 
             return "dashboard-risk-low";
 
         }
 
 
-        if (score >= 70) {
+        if (value === "medium") {
 
             return "dashboard-risk-medium";
 
         }
 
 
-        if (score >= 40) {
+        if (value === "high") {
 
             return "dashboard-risk-high";
 
@@ -105,40 +115,6 @@ function Dashboard({ scan, onNewScan }) {
 
 
         return "dashboard-risk-critical";
-
-
-    }
-
-
-
-
-
-    function getRiskLabel(score) {
-
-
-        if (score >= 90) {
-
-            return "Low Risk";
-
-        }
-
-
-        if (score >= 70) {
-
-            return "Medium Risk";
-
-        }
-
-
-        if (score >= 40) {
-
-            return "High Risk";
-
-        }
-
-
-        return "Critical Risk";
-
 
     }
 
@@ -292,11 +268,11 @@ function Dashboard({ scan, onNewScan }) {
 
                     <span
                         className={
-                            `meta-badge ${getRiskClass(scan.score)}`
+                            `meta-badge ${getRiskClass(scan.risk_level)}`
                         }
                     >
 
-                        {getRiskLabel(scan.score)}
+                        {scan.risk_level}
 
                     </span>
 
@@ -337,6 +313,30 @@ function Dashboard({ scan, onNewScan }) {
                     <strong>
 
                         {scan.grade}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div>
+
+                    <span>
+                        Scan Duration
+                    </span>
+
+
+                    <strong>
+
+                        {
+                            scan.duration_seconds
+                            ? `${scan.duration_seconds}s`
+                            : "N/A"
+                        }
 
                     </strong>
 

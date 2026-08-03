@@ -72,9 +72,10 @@ function App() {
         }
 
 
+        let interval;
 
-        const interval = setInterval(async () => {
 
+        async function fetchScan() {
 
             try {
 
@@ -96,10 +97,13 @@ function App() {
 
                 ) {
 
-                    clearInterval(interval);
+                    if (interval) {
+
+                        clearInterval(interval);
+
+                    }
 
                 }
-
 
 
             } catch (error) {
@@ -113,8 +117,18 @@ function App() {
 
             }
 
+        }
 
-        }, 2000);
+
+
+        fetchScan();
+
+
+
+        interval = setInterval(
+            fetchScan,
+            2000
+        );
 
 
 
@@ -126,6 +140,7 @@ function App() {
 
 
     }, [scanId]);
+
 
 
 
@@ -157,6 +172,41 @@ function App() {
 
 
 
+
+            <div className="passive-warning">
+
+
+                <span className="warning-icon">
+                    ⚠
+                </span>
+
+
+                <div>
+
+                    <strong>
+                        Passive Security Assessment Only
+                    </strong>
+
+
+                    <p>
+                        Only scan websites you own.
+                        VulnScan Lite performs passive analysis
+                        and does not execute aggressive attacks.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+
+
+
+
             <nav className="navigation">
 
 
@@ -175,6 +225,7 @@ function App() {
                     Scanner
 
                 </button>
+
 
 
 
@@ -247,6 +298,7 @@ function App() {
 
 
 
+
                             <ScanForm
 
                                 onScanCreated={handleScanCreated}
@@ -255,6 +307,7 @@ function App() {
 
 
                         </section>
+
 
 
 
@@ -288,7 +341,6 @@ function App() {
                         }
 
 
-
                     </>
 
 
@@ -305,6 +357,8 @@ function App() {
 
 
             </main>
+
+
 
 
 
@@ -329,6 +383,9 @@ function App() {
 
 
                 </div>
+
+
+
 
 
 

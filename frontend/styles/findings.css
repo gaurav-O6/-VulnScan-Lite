@@ -2,132 +2,79 @@
    FINDINGS FILTER BAR
 ========================= */
 
-
-.filter-bar {
-
+.filter-bar{
     display:flex;
-
     gap:12px;
-
     margin-bottom:28px;
-
     flex-wrap:wrap;
-
 }
 
-
-
-.filter-bar button {
-
-    background:
-
-        var(--bg-panel);
-
-    color:
-
-        var(--text-secondary);
-
-    border:
-
-        1px solid var(--border);
-
-    padding:
-
-        10px 22px;
-
+.filter-bar button{
+    background:var(--bg-panel);
+    color:var(--text-secondary);
+    border:1px solid var(--border);
+    padding:10px 22px;
     border-radius:999px;
-
     cursor:pointer;
-
     font-family:inherit;
-
     font-weight:600;
-
     transition:.25s ease;
-
 }
 
-
-
-.filter-bar button:hover {
-
-    color:white;
-
-    border-color:
-
-        var(--blue);
-
-    transform:
-
-        translateY(-2px);
-
+.filter-bar button:hover{
+    color:#fff;
+    border-color:var(--blue);
+    transform:translateY(-2px);
 }
 
-
-
-.filter-bar button.active-filter {
-
-    background:
-
-        rgba(56,189,248,.12);
-
-    color:
-
-        var(--blue);
-
-    border-color:
-
-        var(--blue);
-
-    box-shadow:
-
-        0 8px 25px rgba(56,189,248,.15);
-
+.filter-bar button.active-filter{
+    background:rgba(56,189,248,.12);
+    color:var(--blue);
+    border-color:var(--blue);
+    box-shadow:0 8px 25px rgba(56,189,248,.15);
 }
-
-
 
 /* =========================
    FINDINGS CONTAINER
 ========================= */
 
-
-.findings-container {
-
+.findings-container{
     margin-top:20px;
-
 }
-
-
 
 /* =========================
    FINDING CARD
 ========================= */
 
-
-.finding-card {
-
-    padding:30px;
-
-    margin-bottom:18px;
+.finding-card{
 
     position:relative;
 
     overflow:hidden;
 
-    background:
+    padding:30px;
 
+    margin-bottom:22px;
+
+    background:
         linear-gradient(
             145deg,
             #0a0f16,
             #070b12
         );
 
+    border:1px solid rgba(255,255,255,.05);
+
+    border-radius:18px;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+
 }
 
-
-
-.finding-card::before {
+.finding-card::before{
 
     content:"";
 
@@ -137,68 +84,42 @@
 
     top:0;
 
-    height:100%;
-
     width:5px;
 
-    background:
+    height:100%;
 
-        var(--blue);
-
-}
-
-
-
-.finding-card:has(.severity-badge.high)::before {
-
-    background:
-
-        var(--red);
+    background:var(--blue);
 
 }
 
-
-
-.finding-card:has(.severity-badge.medium)::before {
-
-    background:
-
-        #fbbf24;
-
+.finding-card:has(.severity-badge.high)::before{
+    background:var(--red);
 }
 
-
-
-.finding-card:has(.severity-badge.low)::before {
-
-    background:
-
-        var(--green);
-
+.finding-card:has(.severity-badge.medium)::before{
+    background:#fbbf24;
 }
 
-
-
-.finding-card:hover {
-
-    transform:
-
-        translateY(-5px);
-
-    border-color:
-
-        rgba(56,189,248,.5);
-
+.finding-card:has(.severity-badge.low)::before{
+    background:var(--green);
 }
 
+.finding-card:hover{
 
+    transform:translateY(-6px);
+
+    border-color:rgba(56,189,248,.45);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.35);
+
+}
 
 /* =========================
-   FINDING TOP
+   FINDING HEADER
 ========================= */
 
-
-.finding-top {
+.finding-top{
 
     display:flex;
 
@@ -206,51 +127,98 @@
 
     align-items:flex-start;
 
-    gap:25px;
+    gap:24px;
 
 }
 
+.finding-title{
 
+    flex:1;
 
-.finding-title h3 {
+    min-width:0;
+
+}
+
+.finding-title h3{
 
     margin:0;
 
-    font-family:
-
-        "Orbitron",
-        sans-serif;
+    font-family:"Orbitron",sans-serif;
 
     font-size:20px;
 
     letter-spacing:.5px;
 
+    color:white;
+
 }
 
-
-
-.finding-title p {
+.finding-title p{
 
     margin-top:12px;
 
+    color:var(--text-secondary);
+
+    line-height:1.75;
+
     max-width:900px;
-
-    color:
-
-        var(--text-secondary);
-
-    line-height:1.7;
 
 }
 
+/* =========================
+   META TAGS
+========================= */
 
+.finding-meta{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-bottom:14px;
+
+}
+
+.finding-id,
+.finding-category{
+
+    padding:5px 12px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+}
+
+.finding-id{
+
+    background:rgba(56,189,248,.12);
+
+    color:#7dd3fc;
+
+}
+
+.finding-category{
+
+    background:rgba(255,255,255,.06);
+
+    color:#d4d4d8;
+
+}
 
 /* =========================
    SEVERITY BADGES
 ========================= */
 
-
-.severity-badge {
+.severity-badge{
 
     display:inline-flex;
 
@@ -258,11 +226,9 @@
 
     justify-content:center;
 
-    height:32px;
+    height:34px;
 
-    padding:
-
-        0 18px;
+    padding:0 18px;
 
     border-radius:999px;
 
@@ -276,340 +242,414 @@
 
     white-space:nowrap;
 
-    line-height:1;
-
-    box-sizing:border-box;
-
-    box-shadow:
-
-        0 8px 20px rgba(0,0,0,.25);
+    flex-shrink:0;
 
 }
 
+.severity-badge.high{
 
+    color:#f87171;
 
-/* HIGH */
+    background:rgba(248,113,113,.18);
 
+    border:1px solid rgba(248,113,113,.5);
 
-.severity-badge.high {
+}
+
+.severity-badge.medium{
+
+    color:#facc15;
+
+    background:rgba(250,204,21,.18);
+
+    border:1px solid rgba(250,204,21,.5);
+
+}
+
+.severity-badge.low{
+
+    color:#4ade80;
+
+    background:rgba(74,222,128,.18);
+
+    border:1px solid rgba(74,222,128,.5);
+
+}
+
+.severity-badge.informational{
+
+    color:#38bdf8;
+
+    background:rgba(56,189,248,.18);
+
+    border:1px solid rgba(56,189,248,.5);
+
+}
+
+/* =========================
+   FOOTER LAYOUT
+========================= */
+
+.finding-footer{
+
+    display:grid;
+
+    grid-template-columns:190px 1fr;
+
+    gap:24px;
+
+    align-items:start;
+
+    margin-top:30px;
+
+}
+
+/* =========================
+   STATUS CARD
+========================= */
+
+.finding-status{
+
+    position:sticky;
+
+    top:0;
+
+    padding:20px;
 
     background:
+        linear-gradient(
+            180deg,
+            rgba(14,18,27,.95),
+            rgba(8,10,15,.95)
+        );
 
-        rgba(248,113,113,.18);
+    border:1px solid var(--border);
 
-    border:
+    border-radius:14px;
 
-        1px solid rgba(248,113,113,.55);
+    height:max-content;
 
-    color:
-
-        #f87171;
-
-}
-
-
-
-/* MEDIUM */
-
-
-.severity-badge.medium {
-
-    background:
-
-        rgba(250,204,21,.18);
-
-    border:
-
-        1px solid rgba(250,204,21,.55);
-
-    color:
-
-        #facc15;
+    align-self:start;
 
 }
 
+.finding-status span{
 
+    display:block;
 
-/* LOW */
+    font-size:12px;
 
+    color:var(--text-muted);
 
-.severity-badge.low {
+    text-transform:uppercase;
 
-    background:
-
-        rgba(74,222,128,.18);
-
-    border:
-
-        1px solid rgba(74,222,128,.55);
-
-    color:
-
-        #4ade80;
+    letter-spacing:.08em;
 
 }
 
+.finding-status strong{
 
+    display:inline-flex;
 
-/* INFORMATIONAL */
+    align-items:center;
 
+    justify-content:center;
 
-.severity-badge.informational {
+    margin-top:14px;
 
-    background:
+    padding:8px 18px;
 
-        rgba(56,189,248,.18);
+    border-radius:999px;
 
-    border:
+    font-size:12px;
 
-        1px solid rgba(56,189,248,.55);
+    font-weight:800;
 
-    color:
+    text-transform:uppercase;
 
-        #38bdf8;
+    letter-spacing:.08em;
 
 }
 
+.failed{
 
+    color:#f87171;
+
+    background:rgba(248,113,113,.18);
+
+    border:1px solid rgba(248,113,113,.5);
+
+}
+
+.passed{
+
+    color:#4ade80;
+
+    background:rgba(74,222,128,.18);
+
+    border:1px solid rgba(74,222,128,.5);
+
+}
+
+/* =========================
+   SEVERITY BADGES
+========================= */
+
+.severity-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:110px;
+    height:34px;
+    padding:0 18px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    white-space:nowrap;
+    flex-shrink:0;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.severity-badge:hover{
+    transform:scale(1.05);
+}
+
+.severity-badge.high{
+    color:#f87171;
+    background:rgba(248,113,113,.18);
+    border:1px solid rgba(248,113,113,.55);
+    box-shadow:0 0 20px rgba(248,113,113,.12);
+}
+
+.severity-badge.medium{
+    color:#facc15;
+    background:rgba(250,204,21,.18);
+    border:1px solid rgba(250,204,21,.55);
+    box-shadow:0 0 20px rgba(250,204,21,.10);
+}
+
+.severity-badge.low{
+    color:#4ade80;
+    background:rgba(74,222,128,.18);
+    border:1px solid rgba(74,222,128,.55);
+    box-shadow:0 0 20px rgba(74,222,128,.10);
+}
+
+.severity-badge.informational{
+    color:#38bdf8;
+    background:rgba(56,189,248,.18);
+    border:1px solid rgba(56,189,248,.55);
+    box-shadow:0 0 20px rgba(56,189,248,.10);
+}
 
 /* =========================
    FINDING FOOTER
 ========================= */
 
-
-.finding-footer {
-
+.finding-footer{
     display:grid;
-
-    grid-template-columns:
-
-        180px 1fr;
-
-    gap:22px;
-
-    margin-top:26px;
-
+    grid-template-columns:190px 1fr;
+    gap:24px;
+    margin-top:30px;
+    align-items:start;
 }
-
-
-
-.finding-status {
-
-    padding:18px;
-
-    background:
-
-        rgba(5,7,11,.8);
-
-    border:
-
-        1px solid var(--border);
-
-    border-radius:12px;
-
-}
-
-
-
-.finding-status span {
-
-    display:block;
-
-    color:
-
-        var(--text-muted);
-
-    font-size:12px;
-
-    text-transform:uppercase;
-
-}
-
-
-
-.finding-status strong {
-
-    display:block;
-
-    margin-top:10px;
-
-    font-size:18px;
-
-}
-
-
-
-.failed {
-
-    color:
-
-        var(--red);
-
-}
-
-
-
-.passed {
-
-    color:
-
-        var(--green);
-
-}
-
-
 
 /* =========================
-   RECOMMENDATION
+   STATUS CARD
 ========================= */
 
+.finding-status{
+    background:rgba(5,7,11,.80);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px;
 
-.recommendation {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 
-    margin-top:20px;
+    align-self:start;
+    height:auto;
 
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.finding-status:hover{
+    transform:translateY(-3px);
+    border-color:var(--blue);
+    box-shadow:0 12px 28px rgba(0,0,0,.30);
+}
+
+.finding-status span{
+    display:block;
+    color:var(--text-muted);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.finding-status strong{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    align-self:flex-start;
+
+    margin-top:14px;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+.failed{
+    color:#f87171;
+    background:rgba(248,113,113,.18);
+    border:1px solid rgba(248,113,113,.45);
+}
+
+.passed{
+    color:#4ade80;
+    background:rgba(74,222,128,.18);
+    border:1px solid rgba(74,222,128,.45);
+}
+
+/* =========================
+   DETAILS COLUMN
+========================= */
+
+.finding-footer > div:last-child{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    min-width:0;
+}
+
+/* =========================
+   INFO CARDS
+========================= */
+
+.recommendation{
+    margin:0;
     padding:22px;
 
-    background:
+    background:linear-gradient(
+        135deg,
+        #111827,
+        #070b12
+    );
 
-        linear-gradient(
-            135deg,
-            #111827,
-            #070b12
-        );
+    border:1px solid #334155;
+    border-left:4px solid var(--blue);
+    border-radius:14px;
 
-    border:
-
-        1px solid #334155;
-
-    border-left:
-
-        4px solid var(--blue);
-
-    border-radius:12px;
-
-    box-shadow:
-
-        inset 0 0 25px rgba(56,189,248,.05);
-
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
 }
 
+.recommendation:hover{
+    transform:translateX(4px);
+    border-left-color:#38bdf8;
+    border-color:#475569;
+    box-shadow:0 14px 32px rgba(0,0,0,.30);
+}
 
-
-.recommendation strong {
-
+.recommendation strong{
     display:block;
-
     margin-bottom:10px;
 
-    color:
-
-        #7dd3fc;
-
-    text-transform:uppercase;
+    color:#7dd3fc;
 
     font-size:13px;
-
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
 }
 
-
-
-.recommendation p {
-
+.recommendation p{
     margin:0;
-
-    color:
-
-        #d4d4d8;
-
-    line-height:1.7;
-
+    color:#d4d4d8;
+    line-height:1.75;
     font-size:15px;
-
+    word-break:break-word;
 }
-
-
 
 /* =========================
    EVIDENCE
 ========================= */
 
-
-.evidence-box {
-
-    margin-top:22px;
-
+.evidence-box{
+    margin-top:24px;
 }
 
-
-
-.evidence-box summary {
-
+.evidence-box summary{
     cursor:pointer;
-
-    color:
-
-        var(--blue);
-
+    color:var(--blue);
     font-weight:600;
-
+    transition:color .25s ease;
 }
 
+.evidence-box summary:hover{
+    color:#7dd3fc;
+}
 
-
-.evidence-box pre {
-
+.evidence-box pre{
     margin-top:14px;
-
     padding:18px;
 
-    background:
+    background:#05070b;
 
-        #05070b;
-
-    border:
-
-        1px solid var(--border);
-
-    border-radius:10px;
+    border:1px solid var(--border);
+    border-radius:12px;
 
     overflow:auto;
 
-    font-family:
-
-        "Space Grotesk",
-        monospace;
-
+    font-family:"Space Grotesk", monospace;
     font-size:13px;
-
     line-height:1.6;
-
 }
-
-
 
 /* =========================
    RESPONSIVE
 ========================= */
 
+@media (max-width:700px){
 
-@media(max-width:700px) {
+    .finding-card{
+        padding:22px;
+    }
 
-
-    .finding-top {
-
+    .finding-top{
         flex-direction:column;
-
     }
 
-
-    .finding-footer {
-
-        grid-template-columns:
-
-            1fr;
-
+    .severity-badge{
+        align-self:flex-start;
     }
 
+    .finding-footer{
+        grid-template-columns:1fr;
+    }
+
+    .finding-status{
+        width:100%;
+    }
+
+    .finding-footer > div:last-child{
+        width:100%;
+    }
 
 }

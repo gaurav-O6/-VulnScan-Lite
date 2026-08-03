@@ -1,5 +1,7 @@
-from bs4 import BeautifulSoup
 import re
+
+from bs4 import BeautifulSoup
+
 
 
 class CMSDetector:
@@ -11,31 +13,63 @@ class CMSDetector:
     CMS_SIGNATURES = {
 
         "WordPress": [
+
             "wordpress",
             "wp-content",
             "wp-includes",
-            "wp-json",
+
         ],
 
         "Drupal": [
+
             "drupal",
-            "/sites/default/",
+
         ],
 
         "Joomla": [
+
             "joomla",
-            "/media/system/",
+
         ],
 
     }
 
 
 
-    def analyze(self, context: dict) -> dict:
+
+    VERSION_PATTERNS = {
+
+        "WordPress": [
+
+            r"wp[-_/].*?ver=([0-9]+\.[0-9]+(?:\.[0-9]+)?)",
+
+            r"wordpress\s*([0-9]+\.[0-9]+(?:\.[0-9]+)?)",
+
+        ],
+
+        "Drupal": [
+
+            r"drupal[-\s]?([0-9]+)",
+
+        ],
+
+        "Joomla": [
+
+            r"joomla[-\s]?([0-9]+(?:\.[0-9]+)?)",
+
+        ],
+
+    }
+
+
+
+
+    def analyze(
+        self,
+        context: dict
+    ) -> dict:
         """
         Analyze response headers and HTML content.
-
-        Passive detection only.
         """
 
 
@@ -44,10 +78,7 @@ class CMSDetector:
 
         technologies = []
 
-        cms_results = []
-
-        detected = set()
-
+        cms = []
 
 
         headers = response.headers
@@ -62,11 +93,14 @@ class CMSDetector:
         if server:
 
             technologies.append(
+
                 {
                     "name": "Server",
                     "value": server,
                 }
+
             )
+
 
 
 
@@ -78,11 +112,14 @@ class CMSDetector:
         if powered_by:
 
             technologies.append(
+
                 {
                     "name": "X-Powered-By",
                     "value": powered_by,
                 }
+
             )
+
 
 
 
@@ -91,9 +128,13 @@ class CMSDetector:
 
 
         soup = BeautifulSoup(
+
             response.text,
-            "html.parser",
+
+            "html.parser"
+
         )
+
 
 
 
@@ -102,16 +143,18 @@ class CMSDetector:
         #
 
         generator = soup.find(
+
             "meta",
+
             attrs={
                 "name": "generator"
             },
+
         )
 
 
-        if generator and generator.get(
-            "content"
-        ):
+
+        if generator and generator.get("content"):
 
 
             content = generator.get(
@@ -119,23 +162,15 @@ class CMSDetector:
             )
 
 
-            cms_name, version = self.extract_version(
+            detected = self._parse_generator(
                 content
             )
 
 
-            cms_results.append(
-                {
-                    "name": cms_name,
-                    "version": version,
-                    "source": "meta generator",
-                }
+            cms.append(
+                detected
             )
 
-
-            detected.add(
-                cms_name
-            )
 
 
 
@@ -146,10 +181,7 @@ class CMSDetector:
         for cms_name, signatures in self.CMS_SIGNATURES.items():
 
 
-            if cms_name in detected:
-
-                continue
-
+            detected = False
 
 
             for signature in signatures:
@@ -157,22 +189,43 @@ class CMSDetector:
 
                 if signature in html:
 
-
-                    cms_results.append(
-                        {
-                            "name": cms_name,
-                            "version": None,
-                            "source": "html signature",
-                        }
-                    )
-
-
-                    detected.add(
-                        cms_name
-                    )
-
+                    detected = True
 
                     break
+
+
+
+            if detected and not self._already_detected(
+                cms,
+                cms_name
+            ):
+
+
+                version = self._detect_version(
+
+                    cms_name,
+
+                    response.text
+
+                )
+
+
+
+                cms.append(
+
+                    {
+
+                        "name": cms_name,
+
+                        "version": version,
+
+                        "source": "html signature",
+
+                    }
+
+                )
+
+
 
 
 
@@ -180,68 +233,151 @@ class CMSDetector:
 
             "technologies": technologies,
 
-            "cms": cms_results,
+            "cms": cms,
 
         }
 
 
 
 
-    def extract_version(
+
+    def _parse_generator(
         self,
         value: str
-    ):
+    ) -> dict:
         """
-        Extract CMS name and version
-        from generator strings.
-
-        Example:
-        WordPress 6.5.2
+        Parse CMS information from generator tag.
         """
 
 
-        patterns = {
+        value_lower = value.lower()
 
-            "WordPress": r"wordpress\s*([0-9.]+)?",
 
-            "Drupal": r"drupal\s*([0-9.]+)?",
 
-            "Joomla": r"joomla!?\s*([0-9.]+)?",
+        for cms_name in self.CMS_SIGNATURES:
+
+
+            if cms_name.lower() in value_lower:
+
+
+                version = self._extract_version(
+                    value
+                )
+
+
+                return {
+
+                    "name": cms_name,
+
+                    "version": version,
+
+                    "source": "meta generator",
+
+                }
+
+
+
+        return {
+
+            "name": value,
+
+            "version": None,
+
+            "source": "meta generator",
 
         }
 
 
 
-        lower_value = value.lower()
+
+    def _detect_version(
+        self,
+        cms_name: str,
+        content: str
+    ):
+        """
+        Detect passive CMS version hints.
+        """
+
+
+        patterns = self.VERSION_PATTERNS.get(
+
+            cms_name,
+
+            []
+
+        )
 
 
 
-        for name, pattern in patterns.items():
+        for pattern in patterns:
 
 
             match = re.search(
+
                 pattern,
-                lower_value,
+
+                content,
+
+                re.IGNORECASE
+
             )
 
 
             if match:
 
-
-                return (
-
-                    name,
-
-                    match.group(1)
-
-                )
+                return match.group(1)
 
 
 
-        return (
 
-            value,
+        return None
 
-            None
+
+
+
+
+    def _extract_version(
+        self,
+        value: str
+    ):
+
+
+        match = re.search(
+
+            r"([0-9]+\.[0-9]+(?:\.[0-9]+)?)",
+
+            value
 
         )
+
+
+        if match:
+
+            return match.group(1)
+
+
+
+        return None
+
+
+
+
+
+    def _already_detected(
+        self,
+        cms,
+        name
+    ) -> bool:
+
+
+        for item in cms:
+
+
+            if item.get("name") == name:
+
+                return True
+
+
+
+        return False

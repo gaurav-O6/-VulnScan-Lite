@@ -2,7 +2,11 @@ from flask import Flask
 from flask_cors import CORS
 
 from app.config import Config
-from app.extensions import db, migrate
+from app.extensions import (
+    db,
+    migrate,
+    limiter,
+)
 
 from app.api import (
     health_bp,
@@ -11,6 +15,7 @@ from app.api import (
 
 # Import models so Flask-Migrate can discover them
 from app.models import Scan
+
 
 
 def create_app():
@@ -52,6 +57,10 @@ def create_app():
     migrate.init_app(
         app,
         db
+    )
+
+    limiter.init_app(
+        app
     )
 
 
