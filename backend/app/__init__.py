@@ -33,18 +33,19 @@ def create_app():
 
 
 
-    # Enable CORS for frontend development
+    # Enable CORS
     #
-    # Vite can automatically move ports
-    # (5173, 5174, 5175, etc.)
-    # when another process occupies the port.
-    #
-    # Allow localhost development ports only.
+    # Allow:
+    # - Local Vite development
+    # - Production Vercel frontend
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": r"http://localhost:\d+"
+                "origins": [
+                    r"http://localhost:\d+",
+                    "https://vuln-scan-lite-wheat.vercel.app",
+                ]
             }
         },
     )
