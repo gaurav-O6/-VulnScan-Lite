@@ -374,6 +374,70 @@ def get_scan_history():
 
 
 @scans_bp.route(
+    "/<int:scan_id>",
+    methods=["DELETE"],
+)
+def delete_scan(scan_id: int):
+    """
+    Delete scan history permanently.
+    """
+
+    scan = db.session.get(
+        Scan,
+        scan_id,
+    )
+
+
+    if scan is None:
+
+        return (
+            jsonify(
+                {
+                    "error": "Scan not found."
+                }
+            ),
+            404,
+        )
+
+
+    try:
+
+        db.session.delete(
+            scan
+        )
+
+        db.session.commit()
+
+
+    except Exception:
+
+        db.session.rollback()
+
+        logger.exception(
+            "Failed to delete scan."
+        )
+
+
+        return (
+            jsonify(
+                {
+                    "error": "Unable to delete scan."
+                }
+            ),
+            500,
+        )
+
+
+    return jsonify(
+        {
+            "message": "Scan deleted successfully.",
+            "scan_id": scan_id,
+        }
+    )
+
+
+
+@scans_bp.route(
     "/<int:scan_id>/report/pdf",
     methods=["GET"],
 )
