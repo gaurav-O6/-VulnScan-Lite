@@ -1,15 +1,12 @@
 import os
-import traceback
 
 import redis
 from rq import Queue
 
 
-redis_url = os.getenv("REDIS_URL")
-
-print("=" * 60)
-print("REDIS_URL =", repr(redis_url))
-print("=" * 60)
+redis_url = os.getenv(
+    "REDIS_URL"
+)
 
 
 if redis_url:
@@ -25,17 +22,6 @@ else:
         port=6379,
         db=0,
     )
-
-
-print("PINGING REDIS...")
-
-try:
-
-    print("PING RESULT:", redis_connection.ping())
-
-except Exception:
-
-    traceback.print_exc()
 
 
 scan_queue = Queue(
